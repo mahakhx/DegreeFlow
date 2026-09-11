@@ -452,15 +452,16 @@
   (function ticker() {
     const track = document.getElementById('tickerTrack');
     if (!track) return;
-    const chains = PREREQS.map(([f, t]) => [byId[f].code, byId[t].code]);
+    const labels = ['PREREQUISITES', 'SEMESTERS', 'MAJOR SWITCHES', 'MINORS', 'TRANSFER CREDITS', 'GRADUATION', 'WHAT-IF PATHS'];
     const row = document.createDocumentFragment();
-    const make = () => chains.forEach(([a, b]) => {
+    const makeCycle = () => labels.forEach((label, i) => {
       const item = document.createElement('span');
       item.className = 'ticker-item';
-      item.innerHTML = `${a} <span class="tick-arrow">→</span> ${b}<i class="tick-dot"></i>`;
+      const isLast = i === labels.length - 1;
+      item.innerHTML = `${label} <span class="tick-arrow">→</span>${isLast ? '<i class="tick-dot"></i>' : ''}`;
       row.appendChild(item);
     });
-    make(); make();
+    makeCycle(); makeCycle();
     track.appendChild(row);
   })();
 

@@ -30,6 +30,10 @@
     <span class="pre-brand">DegreeFlow</span>
     <span class="pre-note">Mapping the path</span>
   </div>
+  <div class="pre-bottom"> See how your degree flows, and your path to graduation.</div>
+    <span class="pre-dot"></span>
+    <span class="pre-dot"></span>
+    <span class="pre-dot"></span>
   <p class="pre-count"><span id="preCount">0</span><i>%</i></p>
   <div class="pre-bar"><i id="preBar"></i></div>
 </div>
@@ -40,14 +44,16 @@
 <header class="nav-wrap">
   <nav class="nav" id="nav" aria-label="Primary">
     <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true">
+      <!--       <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true">
         <path d="M7 24 L17 17 L27 10" />
         <path d="M7 24 L17 17 L27 24" class="faint" />
         <circle cx="7" cy="24" r="3.1" />
         <circle cx="17" cy="17" r="3.1" class="mid" />
         <circle cx="27" cy="10" r="3.1" class="tip" />
         <circle cx="27" cy="24" r="2.2" class="faint-dot" />
-      </svg>
+      </svg>  -->
+
+      <img class="brand-mark-fallback" src="images/DegreeFlow_logo.png" alt="" aria-hidden="true" width="70" height="50"/>
       <span class="brand-name">DegreeFlow</span>
     </a>
 
@@ -59,7 +65,7 @@
       <a href="#hero" class="nav-link is-current">Home</a>
       <a href="/problem-solution" class="nav-link">Problem &amp; Solution</a>
       <a href="#how" class="nav-link">How It Works</a>
-      <a href="/explore" class="btn btn-primary btn-sm magnetic">Explore Your Path <span class="arrow">→</span></a>
+      <a href="explore.html" class="btn btn-primary btn-sm magnetic">Explore Your Path <span class="arrow">→</span></a>
     </div>
   </nav>
 </header>
@@ -80,23 +86,29 @@
       </h1>
 
       <p class="hero-sub" data-seq="5">
-        Visualize your courses, understand your prerequisites, and see how every
-        academic decision shapes your path to graduation.
+        Visualize your courses, map prerequisite dependencies, 
+        and simulate switching majors before taking the leap.
       </p>
 
       <div class="hero-actions" data-seq="6">
-        <a class="btn btn-primary magnetic" href="/explore">Explore Your Path <span class="arrow">→</span></a>
+        <a class="btn btn-primary magnetic" href="explore.html">Explore Your Path <span class="arrow">→</span></a>
         <a class="btn btn-ghost magnetic" href="#how">See How It Works <span class="arrow down">↓</span></a>
       </div>
 
       <dl class="hero-meta" data-seq="7">
-        <div><dt>Courses mapped</dt><dd data-count="2400" data-suffix="+">0</dd></div>
+       <!--<div><dt>Courses mapped</dt><dd data-count="2400" data-suffix="+">0</dd></div>
         <div><dt>Prerequisite links</dt><dd data-count="9100" data-suffix="+">0</dd></div>
-        <div><dt>What-if scenarios</dt><dd>Unlimited</dd></div>
+        <div><dt>What-if scenarios</dt><dd>Unlimited</dd></div>--> 
+        <div><dt>Courses</dt><dd>Mapped curriculum</dd></div>
+        <div><dt>Prerequisite links</dt><dd >Made visible</dd></div>
+        <div><dt>What-if scenarios</dt><dd>Explore without committing</dd></div>
+      
       </dl>
     </div>
 
+    
     <div class="hero-stage" data-seq="8">
+      
       <div class="stage" id="stage">
         <svg class="graph" id="graph" viewBox="0 0 640 560" preserveAspectRatio="xMidYMid meet" role="img"
              aria-label="Interactive prerequisite map of a computer science degree, showing completed, in-progress, available and locked courses leading to a degree node.">
@@ -133,11 +145,11 @@
           <span class="node-card-state" id="ncState"></span>
           <span class="node-card-unlock" id="ncUnlock"></span>
         </div>
-
-        <p class="stage-hint" id="stageHint">Hover a course to trace what it depends on — and what it unlocks.</p>
+<p class="stage-hint" id="stageHint">Hover a course to trace what it depends on — and what it unlocks.</p>
+        
       </div>
 
-      <aside class="panel" aria-label="Degree progress preview">
+      <!-- <aside class="panel" aria-label="Degree progress preview">
         <header class="panel-head">
           <div>
             <p class="panel-label">Your path</p>
@@ -166,7 +178,7 @@
           <circle cx="196" cy="44" r="5.5" class="mini-dot live" />
           <circle cx="286" cy="18" r="5" class="mini-dot next" />
         </svg>
-      </aside>
+      </aside> !-->
     </div>
   </div>
 </section>
@@ -253,9 +265,8 @@
       <ol class="step-list">
         <li class="step" style="--i:0">
           <span class="step-num">01</span>
-          <h3>Connect your degree</h3>
-          <p>Import your program and transcript. DegreeFlow reads the catalog rules for you.</p>
-        </li>
+          <h3>Set up your degree</h3>
+          <p>Choose your university, major and current year.</p> </li>
         <li class="step" style="--i:1">
           <span class="step-num">02</span>
           <h3>Visualize your pathway</h3>
@@ -279,8 +290,8 @@
       <span class="cta-line">See where your degree</span>
       <span class="cta-line">can take you.</span>
     </h2>
-    <p>Your courses create a path. DegreeFlow helps you see it.</p>
-    <a class="btn btn-primary btn-lg magnetic" href="/explore">Explore Your Path <span class="arrow">→</span></a>
+    <p>Your next decision shouldn't be a guessing game.</p>
+    <a class="btn btn-primary btn-lg magnetic" href="explore.html">Explore Your Path <span class="arrow">→</span></a>
   </div>
 </section>
 
@@ -289,18 +300,14 @@
 <footer class="footer">
   <div class="shell footer-inner">
     <a class="brand" href="/">
-      <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true">
-        <path d="M7 24 L17 17 L27 10" />
-        <circle cx="7" cy="24" r="3.1" />
-        <circle cx="17" cy="17" r="3.1" class="mid" />
-        <circle cx="27" cy="10" r="3.1" class="tip" />
-      </svg>
+           <img class="brand-mark-fallback" src="images/DegreeFlow_logo.png" alt="" aria-hidden="true" width="70" height="50"/>
+
       <span class="brand-name">DegreeFlow</span>
     </a>
     <nav class="footer-links" aria-label="Footer">
       <a href="/problem-solution">Problem &amp; Solution</a>
       <a href="#how">How It Works</a>
-      <a href="/explore">Explore Your Path</a>
+      <a href="explore.html">Explore Your Path</a>
     </nav>
     <p class="footer-note">© 2026 DegreeFlow</p>
   </div>
