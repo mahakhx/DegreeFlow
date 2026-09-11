@@ -2,7 +2,7 @@
 
 > **Plan your degree. Visualize your path. Build your future.**
 
-DegreeFlow is an interactive academic planning platform designed to help university students understand and navigate their degree pathways.
+DegreeFlow is a prototype for an interactive academic planning platform designed to help university students understand and navigate their degree pathways.
 
 Instead of viewing a degree as a list of courses and requirements, DegreeFlow turns it into a **visual, interactive roadmap**—making it easier for students to see where they are, what comes next, and how different academic decisions can affect their journey.
 
@@ -18,11 +18,11 @@ Instead of viewing a degree as a list of courses and requirements, DegreeFlow tu
 
 ## 💡 The Problem
 
-University degree planning can be surprisingly difficult.
+University degree planning can be surprisingly difficult (trust me i know). 
 
 Students often have to piece together information from course catalogs, degree plans, prerequisite lists, university websites, and academic advising. This can make it difficult to understand the **bigger picture** of their degree.
 
-Questions such as:
+Having to constantly think about: 
 
 - *What courses should I take next?*
 - *What happens if I change my major?*
@@ -30,9 +30,9 @@ Questions such as:
 - *Which courses are prerequisites for my future courses?*
 - *What will my degree look like if I take a different path?*
 
-can require a lot of manual planning.
+This can be soo tiring and unnecessarily stressful.
 
-### Our Solution
+### The Solution
 
 **DegreeFlow transforms degree requirements into an interactive visual experience.**
 
@@ -54,22 +54,20 @@ The interface uses:
 - Smooth transitions and animations
 - Minimal, modern academic aesthetics
 
-The goal is to make academic planning feel less like navigating a spreadsheet and more like **exploring a personalized pathway**.
+The goal is to make academic planning feel less like navigating a boring spreadsheet and more like **exploring a personalized pathway**.
 
 ## 🛠️ Built With
 
 - HTML
 - CSS
 - JavaScript
-- [Add your framework/library here if applicable — e.g. React, Vite, Tailwind CSS]
-- [Add any other technologies used]
 
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/degreeflow.git
+git clone https://github.com/mahakhx/degreeflow.git
 ```
 
 ### 2. Navigate to the project
@@ -99,12 +97,8 @@ Then open the local URL provided in your terminal.
 ```text
 degreeflow/
 ├── public/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── assets/
-│   └── ...
-├── package.json
+├── images/
+├── pages/
 └── README.md
 ```
 
@@ -121,7 +115,7 @@ Future versions could include:
 - Real university degree databases
 - Automated prerequisite checking
 - Graduation timeline prediction
-- Personalized course recommendations
+- Personalized course and elective recommendations
 - GPA and workload planning
 - More universities and degree programs
 - AI-powered academic pathway suggestions
