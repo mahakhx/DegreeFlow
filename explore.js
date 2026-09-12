@@ -31,10 +31,10 @@
   /* UNIVERSITY LOGOS — fill these in to show a logo, e.g.
      sharjah: 'logos/sharjah.svg'. Leave null for an empty slot. */
   const LOGO_SRC = {
-    sharjah: null,
-    khalifa: null,
-    aus: null,
-    rit: null
+    sharjah: 'logos/uos logo.png',
+    khalifa: 'logos/ku logo.png',
+    aus: 'logos/aus logo.png',
+    rit: 'logos/rit logo.png'
   };
 
   const UNIVERSITIES = {
@@ -438,8 +438,10 @@
       wrap.classList.remove('is-swapping');
     }, reduceMotion ? 0 : 220);
 
-    $('#resetBtn').hidden = !(state.minor || state.university !== 'sharjah' ||
+    const modified = !!(state.minor || state.university !== 'sharjah' ||
       state.major !== 'cs' || state.completed.size || Object.keys(state.moved).length);
+    $('#resetBtn').hidden = !modified;
+    $('#configBar').classList.toggle('is-on', modified);
   }
 
   function renderState() {
@@ -453,30 +455,44 @@
   /* =========================================================
      6. TIMELINE MAP
      ========================================================= */
+  const STATUS = {
+    done:   { icon: '✓', label: 'COMPLETED' },
+    active: { icon: '◉', label: 'IN PROGRESS' },
+    open:   { icon: '○', label: 'AVAILABLE' },
+    locked: { icon: '🔒', label: 'LOCKED' }
+  };
+
+  /* which minor a course belongs to, so the branch can label itself */
+  function minorOf(id) {
+    const found = Object.values(MINORS).find(m => m.courses.some(([cid]) => cid === id));
+    return found ? found.name : null;
+  }
+
   function courseCard(c, i, opts) {
     const card = el('article', `course st-${c.state} kind-${c.kind}`);
     card.dataset.id = c.id;
     card.style.setProperty('--d', i);
     if (opts.animate) card.classList.add('anim-in');
     if (c.diff) card.classList.add('diff-' + c.diff);
+
     const movable = opts.editable && c.state !== 'done';
     if (!movable) card.classList.add('no-drag');
 
-    const tag = c.diff === 'new' ? 'NEW'
-      : c.kind === 'elective' ? 'ELECTIVE'
-      : c.kind === 'minor' ? 'MINOR'
-      : c.state === 'done' ? 'COMPLETED'
-      : c.state === 'active' ? 'CURRENT'
-      : c.state === 'open' ? 'AVAILABLE' : 'LOCKED';
+    const s = STATUS[c.state];
+    const label = c.diff === 'new' ? 'NEW REQUIREMENT' : s.label;
+    const canCheck = opts.editable && (c.state === 'active' || c.state === 'open');
 
     card.innerHTML = `
-      <div class="c-top"><span class="c-dot"></span><span class="c-code">${c.code}</span></div>
+      <p class="c-status"><span class="c-icon">${s.icon}</span>${label}</p>
+      <p class="c-code">${c.code}</p>
       <p class="c-name">${c.name}</p>
-      <div class="c-foot"><span class="c-cr">${c.cr} cr</span><span class="c-tag">${tag}</span></div>
-      ${movable ? '<span class="c-grip" aria-hidden="true"><span></span></span>' : ''}`;
+      <p class="c-cr">${c.cr} credits${c.kind === 'elective' ? ' · elective' : ''}</p>
+      ${opts.editable ? `<button class="c-check" type="button" ${canCheck ? '' : 'disabled'}
+          aria-label="${canCheck ? 'Mark ' + c.name + ' complete' : c.name + ' cannot be completed yet'}">✓</button>` : ''}`;
+
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', `${c.code} ${c.name}, ${tag.toLowerCase()}`);
+    card.setAttribute('aria-label', `${c.code} ${c.name}, ${label.toLowerCase()}`);
     return card;
   }
 
@@ -510,8 +526,16 @@
         col.innerHTML = `<div class="sem-head"><span class="sem-name">${meta.name}</span><span class="sem-term">${meta.term}</span></div>`;
         const cards = el('div', 'sem-cards');
         cards.dataset.sem = sem;
-        list.filter(c => c.sem === sem && c.kind !== 'minor').forEach(c => cards.appendChild(courseCard(c, i++, opts)));
-        list.filter(c => c.sem === sem && c.kind === 'minor').forEach(c => cards.appendChild(courseCard(c, i++, opts)));
+        list.filter(c => c.sem === sem && c.kind !== 'minor')
+          .forEach(c => cards.appendChild(courseCard(c, i++, opts)));
+
+        const minors = list.filter(c => c.sem === sem && c.kind === 'minor');
+        if (minors.length) {
+          const group = el('div', 'minor-group');
+          group.appendChild(el('p', 'minor-group-label', `${minorOf(minors[0].id) || 'Minor'} minor`));
+          minors.forEach(c => group.appendChild(courseCard(c, i++, opts)));
+          cards.appendChild(group);
+        }
         col.appendChild(cards);
         cols.appendChild(col);
       });
@@ -676,6 +700,11 @@
         state.selected ? highlight(state.selected) : clearHighlight();
       });
       card.addEventListener('click', () => selectCourse(id));
+      const check = $('.c-check', card);
+      if (check) check.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!check.disabled) completeCourse(id);
+      });
       card.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectCourse(id); }
       });
@@ -689,26 +718,13 @@
     if (!course || course.state === 'done' || course.state === 'locked') return;
 
     state.completed.add(id);
-    map.list = buildPath();
-    map.edges = edgesOf(map.list);
-
-    $$('.course', map.tl).forEach(node => {
-      const c = map.list.find(x => x.id === node.dataset.id);
-      if (!c) return;
-      node.className = node.className.replace(/st-\w+/, 'st-' + c.state);
-      const tagEl = $('.c-tag', node);
-      if (tagEl && c.kind === 'core') {
-        tagEl.textContent = c.state === 'done' ? 'COMPLETED' : c.state === 'active' ? 'CURRENT'
-          : c.state === 'open' ? 'AVAILABLE' : 'LOCKED';
-      }
-      if (c.state === 'done') node.classList.add('no-drag');
-    });
+    morphMap(buildPath());
 
     const card = $(`.course[data-id="${id}"]`, map.tl);
-    if (card) { card.classList.add('flash-done'); setTimeout(() => card.classList.remove('flash-done'), 900); }
-
-    drawEdges(map.tl, map.edges, map.list, false);
-    renderRail();
+    if (card) {
+      card.classList.add('flash-done');
+      setTimeout(() => card.classList.remove('flash-done'), 900);
+    }
     renderConfig();
 
     const unlocked = map.edges.filter(e => e[0] === id)
@@ -865,11 +881,9 @@
         <ul class="detail-list">${unlocks.map(u => `<li data-go="${u.id}"><i>→</i>${u.name}</li>`).join('')}</ul>
         <span class="unlock-count">${unlocks.length} course${unlocks.length > 1 ? 's' : ''} unlocked</span></div>` : ''}
       ${(c.state === 'active' || c.state === 'open') && map.opts.editable
-        ? '<button class="btn btn-primary btn-sm detail-check" type="button" data-complete>Mark complete ✓</button>' : ''}`;
+        ? '<p class="detail-empty" style="margin-top:13px">Use the check on the course card to mark it complete.</p>' : ''}`;
 
     $$('[data-go]', p).forEach(li => li.addEventListener('click', () => selectCourse(li.dataset.go)));
-    const cbtn = $('[data-complete]', p);
-    if (cbtn) cbtn.addEventListener('click', () => completeCourse(c.id));
     return p;
   }
 
@@ -955,6 +969,12 @@
     return wrap;
   }
 
+  function compareBox(nodes) {
+    const box = el('div', 'compare-box');
+    nodes.filter(Boolean).forEach(n => box.appendChild(n));
+    return box;
+  }
+
   function actionRow(previewLabel, applyLabel, onPreview, onApply, note) {
     const row = el('div', 'action-row');
     const pv = el('button', 'btn btn-ghost magnetic', `${previewLabel} <span class="arrow">→</span>`);
@@ -1021,31 +1041,31 @@
     futures.append(a, b);
     view.appendChild(futures);
 
-    view.appendChild(el('div', 'legend',
-      `<span><i style="color:#4DA3FF">✓</i> transfers to the new path</span>
-       <span><i style="color:#5EE6A8">+</i> new requirement</span>
-       <span><i style="color:#FF8FC0">!</i> no longer required</span>`));
-
     const keptCr = d.kept.reduce((n, id) => n + next.find(c => c.id === id).cr, 0);
     const newCr = d.added.reduce((n, c) => n + c.cr, 0);
-    view.appendChild(impactBars([
-      { label: 'Already completed', value: doneCredits(current), cls: 'f-done' },
-      { label: 'Transfers across', value: keptCr, cls: 'f-keep' },
-      { label: 'New requirements', value: newCr, cls: 'f-new' }
-    ]));
 
-    view.appendChild(el('div', 'stat-row', `
-      <div class="stat s-warn"><b>${d.changed} courses</b><span>Your path changes by</span></div>
-      <div class="stat s-new"><b>${d.after - d.before >= 0 ? '+' : ''}${d.after - d.before}</b><span>Credit difference</span></div>
-      <div class="stat s-keep"><b>4 years</b><span>Graduation timeline</span></div>`));
-
-    view.appendChild(actionRow('Preview New Path', 'Apply to My Path',
+    view.appendChild(compareBox([
+      el('div', 'legend',
+        `<span><i style="color:#4DA3FF">✓</i> transfers to the new path</span>
+         <span><i style="color:#5EE6A8">+</i> new requirement</span>
+         <span><i style="color:#FF8FC0">!</i> no longer required</span>`),
+      impactBars([
+        { label: 'Already completed', value: doneCredits(current), cls: 'f-done' },
+        { label: 'Transfers across', value: keptCr, cls: 'f-keep' },
+        { label: 'New requirements', value: newCr, cls: 'f-new' }
+      ]),
+      el('div', 'stat-row', `
+        <div class="stat s-warn"><b>${d.changed} courses</b><span>Your path changes by</span></div>
+        <div class="stat s-new"><b>${d.after - d.before >= 0 ? '+' : ''}${d.after - d.before}</b><span>Credit difference</span></div>
+        <div class="stat s-keep"><b>4 years</b><span>Graduation timeline</span></div>`),
+      actionRow('Preview New Path', 'Apply to My Path',
       () => enterPreview('major', tagDiff(buildPath({ major: to }), current),
         `Preview · ${MAJORS[to].degree}`,
         'New requirements glow in; courses you keep slide to their new position.',
         `Previewing ${majorName(to)}`),
       () => applyChange('major'),
-      'Prototype data — course equivalencies are illustrative.'));
+      'Prototype data — course equivalencies are illustrative.')
+    ]));
 
     mapLayout(
       state.preview === 'major' ? `Preview · ${MAJORS[to].degree}` : MAJORS[from].degree,
@@ -1078,25 +1098,30 @@
     branch.appendChild(miniPath(next.filter(c => c.kind === 'minor'), () => ({ cls: 'new', mark: '+' })));
 
     const impact = el('div', 'future', `<div class="future-head"><div>
-        <p class="future-role">IMPACT</p>
-        <p class="future-name">What it costs you</p>
-        <p class="future-sub">Against your ${MAJORS[state.major].name} path</p></div></div>
-      <div class="stat-row" style="margin-top:15px">
-        <div class="stat s-new"><b>+${d.after - d.before}</b><span>Additional credits</span></div>
-        <div class="stat s-keep"><b>${minor.courses.length}</b><span>Courses</span></div>
-        <div class="stat s-keep"><b>+${overlap}</b><span>Prerequisite overlap</span></div>
-        <div class="stat s-new"><b>+0</b><span>Extra semesters</span></div>
-      </div>`);
+        <p class="future-role">HOW IT CONNECTS</p>
+        <p class="future-name">One branch, same degree</p>
+        <p class="future-sub">Minor courses sit in a marked branch inside each semester, so they never blur into your core requirements.</p></div></div>`);
     grid.append(branch, impact);
     view.appendChild(grid);
 
-    view.appendChild(actionRow('Preview Minor', 'Add to My Path',
+    view.appendChild(compareBox([
+      el('div', 'stat-row', `
+        <div class="stat s-new"><b>+${d.after - d.before}</b><span>Additional credits</span></div>
+        <div class="stat s-keep"><b>${minor.courses.length}</b><span>Courses</span></div>
+        <div class="stat s-keep"><b>+${overlap}</b><span>Prerequisite overlap</span></div>
+        <div class="stat s-new"><b>+0</b><span>Extra semesters</span></div>`),
+      impactBars([
+        { label: 'Major requirements', value: credits(current), cls: 'f-keep' },
+        { label: 'Minor adds', value: d.after - d.before, cls: 'f-new' }
+      ]),
+      actionRow('Preview Minor', 'Add to My Path',
       () => enterPreview('minor', tagDiff(buildPath({ minor: minorId }), current),
         `Preview · with ${minor.name} minor`,
         'Minor courses join the map as a dashed branch off your core sequence.',
         `Previewing the ${minor.name} minor`),
       () => applyChange('minor'),
-      state.minor === minorId ? 'This minor is already on your path.' : ''));
+      state.minor === minorId ? 'This minor is already on your path.' : '')
+    ]));
 
     mapLayout(
       state.preview === 'minor' ? `Preview · with ${minor.name} minor` : MAJORS[state.major].degree,
@@ -1146,35 +1171,32 @@
     futures.append(a, b);
     view.appendChild(futures);
 
-    view.appendChild(el('div', 'legend',
-      `<span><i style="color:#4DA3FF">✓</i> transfers as credit</span>
-       <span><i style="color:#9B8CFF">↔</i> may need equivalency review</span>
-       <span><i style="color:#5EE6A8">+</i> new requirement</span>`));
-
-    view.appendChild(impactBars([
-      { label: 'Transferable', value: transferCr, cls: 'f-keep' },
-      { label: 'May need review', value: reviewCr, cls: 'f-done' },
-      { label: 'New requirements', value: newCr, cls: 'f-new' }
-    ]));
-
-    view.appendChild(el('div', 'stat-row', `
-      <div class="stat s-keep"><b>${doneCredits(current)}</b><span>Credits completed</span></div>
-      <div class="stat s-keep"><b>${transferCr}</b><span>Transferable</span></div>
-      <div class="stat s-warn"><b>${reviewCr}</b><span>May need review</span></div>
-      <div class="stat s-new"><b>${newCr}</b><span>New requirements</span></div>`));
-
-    view.appendChild(el('div', 'notice',
-      `<span>⚠</span><span><b>University requirements differ.</b> ${to.note} Some courses may require equivalency review before credit is granted.</span>`));
-
-    view.appendChild(actionRow('Compare Universities', 'Apply to My Path',
+    view.appendChild(compareBox([
+      el('div', 'legend',
+        `<span><i style="color:#4DA3FF">✓</i> transfers as credit</span>
+         <span><i style="color:#9B8CFF">↔</i> may need equivalency review</span>
+         <span><i style="color:#5EE6A8">+</i> new requirement</span>`),
+      impactBars([
+        { label: 'Transferable', value: transferCr, cls: 'f-keep' },
+        { label: 'May need review', value: reviewCr, cls: 'f-done' },
+        { label: 'New requirements', value: newCr, cls: 'f-new' }
+      ]),
+      el('div', 'stat-row', `
+        <div class="stat s-keep"><b>${doneCredits(current)}</b><span>Credits completed</span></div>
+        <div class="stat s-keep"><b>${transferCr}</b><span>Transferable</span></div>
+        <div class="stat s-warn"><b>${reviewCr}</b><span>May need review</span></div>
+        <div class="stat s-new"><b>${newCr}</b><span>New requirements</span></div>`),
+      el('div', 'notice',
+        `<span>⚠</span><span><b>University requirements differ.</b> ${to.note} Some courses may require equivalency review before credit is granted.</span>`),
+      actionRow('Compare Universities', 'Apply to My Path',
       () => enterPreview('university', tagDiff(buildPath({ university: toId }), current),
         `Preview · ${to.name}`,
         'Courses that transfer keep their place; new requirements appear in the later years.',
         `Previewing ${to.name}`),
-      () => applyChange('university'), ''));
-
-    view.appendChild(el('p', 'disclaimer',
-      'Illustrative prototype. Transfer outcomes here are examples for demonstration, not real admissions or credit decisions.'));
+      () => applyChange('university'), ''),
+      el('p', 'disclaimer',
+        'Illustrative prototype. Transfer outcomes here are examples for demonstration, not real admissions or credit decisions.')
+    ]));
 
     mapLayout(
       state.preview === 'university' ? `Preview · ${to.name}` : from.name,
@@ -1230,7 +1252,7 @@
      ========================================================= */
   const STEPS = [
     { id: 'select', title: 'Click a course', text: 'See what it depends on and everything it unlocks.', target: () => $('.course.st-active'), side: 'right' },
-    { id: 'complete', title: 'Mark it complete', text: 'Finish a course and watch the next ones unlock.', target: () => $('.detail'), side: 'top' },
+    { id: 'complete', title: 'Mark it complete', text: 'Finish a course and watch the next ones unlock.', target: () => $('.course.st-active .c-check'), side: 'right' },
     { id: 'drag', title: 'Move a course', text: 'Drag any upcoming course into a different semester.', target: () => $('.course.st-open'), side: 'right' },
     { id: 'scenario', title: 'Change something bigger', text: 'Switch a major, add a minor or move university — this map responds.', target: () => $('#tabs'), side: 'right' }
   ];

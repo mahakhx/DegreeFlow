@@ -14,29 +14,7 @@
 </head>
 <body class="explore-page">
 
-<!--
-  ═══════════════════════════════════════════════════════════════
-  UNIVERSITY LOGOS — WHERE TO ADD THEM
-  ═══════════════════════════════════════════════════════════════
-  Every university shown on this page renders an empty logo slot:
 
-      <span class="uni-logo" data-uni="sharjah"></span>
-
-  Slots are created in explore.js by the logoSlot() helper (search
-  for "UNIVERSITY LOGO"). To add a real logo, either:
-
-  A) drop files into a /logos folder and fill in LOGO_SRC in
-     explore.js:   sharjah: 'logos/sharjah.svg'
-  B) or paste an <img> straight into the slot markup:
-     <span class="uni-logo" data-uni="sharjah">
-       <img src="logos/sharjah.svg" alt="University of Sharjah">
-     </span>
-
-  The slot keeps a fixed size and centres any aspect ratio, so
-  transparent PNG or SVG both sit correctly. Leaving it empty is
-  safe — it renders as a subtle glass square.
-  ═══════════════════════════════════════════════════════════════
--->
 
 <div class="bg-field" aria-hidden="true">
   <span class="ribbon"></span>
@@ -53,14 +31,8 @@
 <header class="nav-wrap">
   <nav class="nav" id="nav" aria-label="Primary">
     <a class="brand" href="index.html">
-      <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true">
-        <path d="M7 24 L17 17 L27 10" />
-        <path d="M7 24 L17 17 L27 24" class="faint" />
-        <circle cx="7" cy="24" r="3.1" />
-        <circle cx="17" cy="17" r="3.1" class="mid" />
-        <circle cx="27" cy="10" r="3.1" class="tip" />
-        <circle cx="27" cy="24" r="2.2" class="faint-dot" />
-      </svg>
+      <img class="brand-mark-fallback" src="images/DegreeFlow_logo.png" alt="" aria-hidden="true" width="70" height="50"/>
+      
       <span class="brand-name">DegreeFlow</span>
     </a>
 
@@ -104,10 +76,14 @@
   <section class="work">
     <div class="shell">
 
+      <!-- sits above the panel so the dropdown row keeps its full width -->
+      <div class="config-bar" id="configBar">
+        <button class="btn btn-ghost btn-sm" id="resetBtn" type="button" hidden>↺ Reset path</button>
+      </div>
+
       <div class="config" id="config">
         <div class="config-fields" id="configFields"></div>
         <div class="config-actions">
-          <button class="btn btn-ghost btn-sm" id="resetBtn" type="button" hidden>Reset path</button>
           <button class="btn btn-primary magnetic" id="buildBtn" type="button">Build My Path <span class="arrow">→</span></button>
         </div>
       </div>
@@ -123,12 +99,8 @@
 <footer class="footer">
   <div class="shell footer-inner">
     <a class="brand" href="index.html">
-      <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true">
-        <path d="M7 24 L17 17 L27 10" />
-        <circle cx="7" cy="24" r="3.1" />
-        <circle cx="17" cy="17" r="3.1" class="mid" />
-        <circle cx="27" cy="10" r="3.1" class="tip" />
-      </svg>
+            <img class="brand-mark-fallback" src="images/DegreeFlow_logo.png" alt="" aria-hidden="true" width="70" height="50"/>
+
       <span class="brand-name">DegreeFlow</span>
     </a>
     <nav class="footer-links" aria-label="Footer">
