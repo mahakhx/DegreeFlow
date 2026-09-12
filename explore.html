@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Explore Your Path — DegreeFlow</title>
-<meta name="description" content="Simulate your degree. Switch a major, add a minor, or change university and watch the whole pathway redraw." />
+<meta name="description" content="See your degree as a living map. Change a major, add a minor or move university, and watch the whole path respond." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,6 +13,30 @@
 <link rel="stylesheet" href="explore.css" />
 </head>
 <body class="explore-page">
+
+<!--
+  ═══════════════════════════════════════════════════════════════
+  UNIVERSITY LOGOS — WHERE TO ADD THEM
+  ═══════════════════════════════════════════════════════════════
+  Every university shown on this page renders an empty logo slot:
+
+      <span class="uni-logo" data-uni="sharjah"></span>
+
+  Slots are created in explore.js by the logoSlot() helper (search
+  for "UNIVERSITY LOGO"). To add a real logo, either:
+
+  A) drop files into a /logos folder and fill in LOGO_SRC in
+     explore.js:   sharjah: 'logos/sharjah.svg'
+  B) or paste an <img> straight into the slot markup:
+     <span class="uni-logo" data-uni="sharjah">
+       <img src="logos/sharjah.svg" alt="University of Sharjah">
+     </span>
+
+  The slot keeps a fixed size and centres any aspect ratio, so
+  transparent PNG or SVG both sit correctly. Leaving it empty is
+  safe — it renders as a subtle glass square.
+  ═══════════════════════════════════════════════════════════════
+-->
 
 <div class="bg-field" aria-hidden="true">
   <span class="ribbon"></span>
@@ -26,12 +50,17 @@
 
 <a class="skip" href="#explore">Skip to content</a>
 
-<!-- ───────────────────────── NAV ───────────────────────── -->
 <header class="nav-wrap">
   <nav class="nav" id="nav" aria-label="Primary">
     <a class="brand" href="index.html">
-          <img class="brand-mark-fallback" src="images/DegreeFlow_logo.png" alt="" aria-hidden="true" width="70" height="50"/>
-
+      <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true">
+        <path d="M7 24 L17 17 L27 10" />
+        <path d="M7 24 L17 17 L27 24" class="faint" />
+        <circle cx="7" cy="24" r="3.1" />
+        <circle cx="17" cy="17" r="3.1" class="mid" />
+        <circle cx="27" cy="10" r="3.1" class="tip" />
+        <circle cx="27" cy="24" r="2.2" class="faint-dot" />
+      </svg>
       <span class="brand-name">DegreeFlow</span>
     </a>
 
@@ -50,53 +79,40 @@
 
 <main id="explore">
 
-  <!-- ── intro ── -->
   <section class="explore-head">
     <div class="shell">
-      <h1 class="mask ex-title"><span>Explore Your Path</span></h1>
-      <p class="ex-sub">See how different academic decisions reshape your journey.</p>
+      <h1 class="ex-title"><span class="grad-word">Explore</span> Your Path</h1>
+      <p class="ex-sub">Change one decision and watch your entire degree respond.</p>
+      <p class="ex-state" id="exState"></p>
     </div>
   </section>
 
-  <!-- ── scenario tabs ── -->
   <section class="tabs-section">
     <div class="shell">
       <div class="tabs-scroll">
         <div class="tabs" role="tablist" aria-label="Scenario" id="tabs">
           <span class="tab-pill" id="tabPill" aria-hidden="true"></span>
-          <button class="tab" role="tab" id="tab-current"    aria-selected="true"  aria-controls="scenario" data-scenario="current">Current Path</button>
-          <button class="tab" role="tab" id="tab-major"      aria-selected="false" aria-controls="scenario" data-scenario="major">Switch Major</button>
-          <button class="tab" role="tab" id="tab-minor"      aria-selected="false" aria-controls="scenario" data-scenario="minor">Add a Minor</button>
-          <button class="tab" role="tab" id="tab-university" aria-selected="false" aria-controls="scenario" data-scenario="university">Change University</button>
+          <button class="tab" role="tab" id="tab-current"    aria-selected="true"  aria-controls="view" data-scenario="current">Current Path</button>
+          <button class="tab" role="tab" id="tab-major"      aria-selected="false" aria-controls="view" data-scenario="major">Switch Major</button>
+          <button class="tab" role="tab" id="tab-minor"      aria-selected="false" aria-controls="view" data-scenario="minor">Add a Minor</button>
+          <button class="tab" role="tab" id="tab-university" aria-selected="false" aria-controls="view" data-scenario="university">Change University</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── configuration + results ── -->
-  <section class="work" id="scenario" role="tabpanel" aria-labelledby="tab-current">
+  <section class="work">
     <div class="shell">
 
-      <div class="config-row">
-        <div class="config" id="config">
-          <div class="config-fields" id="configFields"></div>
-          <button class="btn btn-primary magnetic config-cta" id="buildBtn">Build My Path <span class="arrow">→</span></button>
+      <div class="config" id="config">
+        <div class="config-fields" id="configFields"></div>
+        <div class="config-actions">
+          <button class="btn btn-ghost btn-sm" id="resetBtn" type="button" hidden>Reset path</button>
+          <button class="btn btn-primary magnetic" id="buildBtn" type="button">Build My Path <span class="arrow">→</span></button>
         </div>
-
-        <aside class="progress-panel" id="progressPanel">
-          <p class="pp-label">Your progress</p>
-          <p class="pp-figure"><strong id="ppCredits">42</strong><span>/ 120 credits</span></p>
-          <div class="pp-bar"><i id="ppBar"></i></div>
-          <p class="pp-foot"><span class="pp-dot"></span><span id="ppStatus">Year 2 · On track</span></p>
-        </aside>
       </div>
 
-      <!-- coach list shown instead of floating callouts on narrow screens -->
-      <ol class="coach-list" id="coachList" aria-label="How to use this map"></ol>
-
-      <div class="stage-area" id="stageArea">
-        <div class="view" id="view"></div>
-      </div>
+      <div class="view" id="view" role="tabpanel" aria-labelledby="tab-current"></div>
 
     </div>
   </section>
@@ -107,8 +123,12 @@
 <footer class="footer">
   <div class="shell footer-inner">
     <a class="brand" href="index.html">
-            <img class="brand-mark-fallback" src="images/DegreeFlow_logo.png" alt="" aria-hidden="true" width="70" height="50"/>
-
+      <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true">
+        <path d="M7 24 L17 17 L27 10" />
+        <circle cx="7" cy="24" r="3.1" />
+        <circle cx="17" cy="17" r="3.1" class="mid" />
+        <circle cx="27" cy="10" r="3.1" class="tip" />
+      </svg>
       <span class="brand-name">DegreeFlow</span>
     </a>
     <nav class="footer-links" aria-label="Footer">
