@@ -62,48 +62,6 @@ The goal is to make academic planning feel less like navigating a boring spreads
 - CSS
 - JavaScript
 
-## 🚀 Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/mahakhx/degreeflow.git
-```
-
-### 2. Navigate to the project
-
-```bash
-cd degreeflow
-```
-
-### 3. Install dependencies
-
-If the project uses npm:
-
-```bash
-npm install
-```
-
-### 4. Run the development server
-
-```bash
-npm run dev
-```
-
-Then open the local URL provided in your terminal.
-
-## 📁 Project Structure
-
-```text
-degreeflow/
-├── public/
-├── images/
-├── pages/
-└── README.md
-```
-
-> Project structure may change as DegreeFlow continues to develop.
-
 ## 🧪 Current Status
 
 DegreeFlow is currently a **design prototype / early-stage project** created for a university designathon.
