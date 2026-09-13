@@ -191,7 +191,8 @@
           trigger: pin,
           start: 'top top',
           end: function () { return '+=' + Math.round(window.innerHeight * 1.7); },
-          scrub: .8,
+          scrub: .3,
+          fastScrollEnd: true,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true
@@ -272,7 +273,8 @@
           trigger: pin,
           start: 'top top',
           end: function () { return '+=' + Math.round(window.innerHeight * 1.9); },
-          scrub: .8,
+          scrub: .3,
+          fastScrollEnd: true,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true
