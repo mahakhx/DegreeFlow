@@ -1,7 +1,7 @@
 /* ============================================================
    DegreeFlow — /problem-solution
-   Scroll reveals, research visualisations, the transition
-   simulator and the small course map.
+   Scroll reveals, the branching hero, the question rotator,
+   the degree map and the what-if simulator.
    ============================================================ */
 
 (function () {
@@ -12,113 +12,128 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-  /* =========================================================
-     1. Scroll reveals — one observer drives every section
-     ========================================================= */
-  const onView = (el, fn, threshold = 0.2) => {
+  /* ---------- shared: run once when scrolled into view ---------- */
+  function onView(el, fn, threshold = 0.2) {
     if (!el) return;
-    if (reduceMotion) { fn(el); return; }
+    if (reduceMotion || typeof IntersectionObserver === 'undefined') { fn(el); return; }
     const io = new IntersectionObserver((entries, obs) => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        fn(e.target);
-        obs.unobserve(e.target);
-      });
+      entries.forEach(e => { if (e.isIntersecting) { fn(e.target); obs.unobserve(e.target); } });
     }, { threshold });
     io.observe(el);
-  };
+  }
 
   $$('.reveal').forEach(el => onView(el, n => n.classList.add('is-in'), 0.15));
 
   /* =========================================================
-     2. Hero: draw the fragmented pathway
+     1. Hero: one degree branching into four futures
      ========================================================= */
-  $$('.fe').forEach((path, i) => {
-    if (typeof path.getTotalLength !== 'function') return;
-    try {
-      const len = path.getTotalLength();
-      path.style.setProperty('--len', len);
-      path.style.setProperty('--d', i);
-    } catch (e) { /* geometry unavailable */ }
-  });
+  (function branches() {
+    const svg = $('.branch');
+    if (!svg) return;
 
-  /* =========================================================
-     3. Domino chain — steps light in sequence, then loop
-     ========================================================= */
-  (function domino() {
-    const wrap = $('#domino');
-    if (!wrap) return;
-    const steps = $$('.dom', wrap);
-    if (reduceMotion) { steps.forEach(s => s.classList.add('is-on')); return; }
+    $$('.be', svg).forEach((p, i) => {
+      if (typeof p.getTotalLength !== 'function') return;
+      try {
+        p.style.setProperty('--len', p.getTotalLength());
+        p.style.setProperty('--d', i);
+      } catch (e) { /* geometry unavailable */ }
+    });
 
-    let timer = null;
-    const run = () => {
-      steps.forEach(s => s.classList.remove('is-on'));
-      steps.forEach((s, i) => setTimeout(() => s.classList.add('is-on'), 260 + i * 420));
+    const futures = $$('.bn.alt', svg);
+    const edges = $$('.be', svg);
+
+    const clear = () => {
+      futures.forEach(f => f.classList.remove('lit', 'dim'));
+      edges.forEach(e => e.classList.remove('lit', 'dim'));
     };
-    onView(wrap, () => {
-      run();
-      timer = setInterval(run, 5200);
-    }, 0.4);
 
-    /* pause the loop when the section is off screen */
-    const pause = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting && !timer) { run(); timer = setInterval(run, 5200); }
-        if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; }
+    const light = idx => {
+      futures.forEach(f => {
+        f.classList.toggle('lit', f.dataset.f === idx);
+        f.classList.toggle('dim', f.dataset.f !== idx);
       });
-    }, { threshold: 0.2 });
-    pause.observe(wrap);
+      edges.forEach(e => {
+        const on = e.classList.contains('spine') || e.dataset.f === idx;
+        e.classList.toggle('lit', on);
+        e.classList.toggle('dim', !on);
+      });
+    };
+
+    futures.forEach(f => {
+      f.addEventListener('mouseenter', () => light(f.dataset.f));
+      f.addEventListener('focus', () => light(f.dataset.f));
+      f.setAttribute('tabindex', '0');
+    });
+    svg.addEventListener('mouseleave', clear);
+
+    /* cycle through the futures on its own until someone interacts */
+    if (reduceMotion) return;
+    let i = 0, auto = null;
+    const stop = () => { if (auto) { clearInterval(auto); auto = null; clear(); } };
+    svg.addEventListener('mouseenter', stop, { once: true });
+    onView(svg, () => {
+      auto = setInterval(() => { light(String(i % futures.length)); i += 1; }, 1900);
+    }, 0.3);
   })();
 
   /* =========================================================
-     4. Research visualisations
+     2. The questions students actually ask
      ========================================================= */
-  /* percentage rings */
-  $$('.ring').forEach(ring => {
-    const pct = Number(ring.dataset.pct);
-    const fg = $('.ring-fg', ring);
-    const num = $('.ring-num', ring);
-    const circumference = 327;   /* 2πr, r = 52 */
+  (function asker() {
+    const el = $('#askQ');
+    if (!el) return;
+    const QS = [
+      'What if I add a minor?',
+      'What if I switch majors?',
+      'What if I transfer universities?',
+      'What if I move this course to next semester?',
+      'Which of my credits would still count?'
+    ];
+    if (reduceMotion) return;
+    let i = 0;
+    setInterval(() => {
+      el.classList.add('out');
+      setTimeout(() => {
+        i = (i + 1) % QS.length;
+        el.textContent = QS[i];
+        el.classList.remove('out');
+      }, 420);
+    }, 3000);
+  })();
 
-    onView(ring, () => {
-      if (fg) fg.style.strokeDashoffset = circumference * (1 - pct / 100);
-      if (!num) return;
-      if (reduceMotion) { num.innerHTML = pct + '<i>%</i>'; return; }
-      const started = performance.now();
+  /* =========================================================
+     3. Research counters and bars
+     ========================================================= */
+  $$('[data-count]').forEach(el => {
+    const target = Number(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const decimals = String(target).includes('.') ? 1 : 0;
+    const fmt = v => (decimals ? v.toFixed(1) : Math.round(v).toLocaleString()) + suffix;
+
+    onView(el, () => {
+      if (reduceMotion) { el.textContent = fmt(target); return; }
+      const t0 = performance.now();
       const tick = now => {
-        const t = Math.min((now - started) / 1400, 1);
-        const eased = 1 - Math.pow(1 - t, 3);
-        num.innerHTML = Math.round(pct * eased) + '<i>%</i>';
+        const t = Math.min((now - t0) / 1500, 1);
+        el.textContent = fmt(target * (1 - Math.pow(1 - t, 3)));
         if (t < 1) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
     }, 0.4);
   });
 
-  /* field-of-study bars */
-  (function bars() {
-    const wrap = $('#bars');
-    if (!wrap) return;
-    const rows = $$('.bar-row', wrap);
-    const max = Math.max(...rows.map(r => Number(r.dataset.val)));
-    onView(wrap, () => {
-      rows.forEach((row, i) => {
-        const fill = $('i', row);
-        fill.style.setProperty('--d', i);
-        fill.style.width = (Number(row.dataset.val) / max * 100) + '%';
-      });
-    }, 0.25);
-  })();
+  onView($('#evBars'), wrap => {
+    $$('.ev-row', wrap).forEach(row => { $('i', row).style.width = row.dataset.val + '%'; });
+  }, 0.3);
 
   /* =========================================================
-     5. Solution: small course map
+     4. The degree map — trace a course's chain
      ========================================================= */
-  (function miniGraph() {
-    const svg = $('#miniGraph');
+  (function degreeMap() {
+    const svg = $('#degMap');
     if (!svg) return;
-    const EDGES = $$('.mg-edges path', svg).map(p => [p.dataset.from, p.dataset.to, p]);
-    const nodes = $$('.mg', svg);
+    const EDGES = $$('.dm-edges path', svg).map(p => [p.dataset.from, p.dataset.to, p]);
+    const nodes = $$('.dm', svg);
 
     const walk = (id, dir) => {
       const found = new Set([id]);
@@ -135,25 +150,25 @@
     };
 
     const clear = () => {
-      nodes.forEach(n => n.classList.remove('is-lit', 'is-dim'));
-      EDGES.forEach(([, , p]) => p.classList.remove('is-lit', 'is-dim'));
+      nodes.forEach(n => n.classList.remove('lit', 'dim'));
+      EDGES.forEach(([, , p]) => p.classList.remove('lit', 'dim'));
     };
 
     const light = id => {
       const chain = new Set([...walk(id, 'up'), ...walk(id, 'down')]);
       nodes.forEach(n => {
-        n.classList.toggle('is-lit', chain.has(n.dataset.id));
-        n.classList.toggle('is-dim', !chain.has(n.dataset.id));
+        n.classList.toggle('lit', chain.has(n.dataset.id));
+        n.classList.toggle('dim', !chain.has(n.dataset.id));
       });
       EDGES.forEach(([f, t, p]) => {
-        const inChain = chain.has(f) && chain.has(t);
-        p.classList.toggle('is-lit', inChain);
-        p.classList.toggle('is-dim', !inChain);
+        const on = chain.has(f) && chain.has(t);
+        p.classList.toggle('lit', on);
+        p.classList.toggle('dim', !on);
       });
     };
 
     nodes.forEach(n => {
-      n.tabIndex = 0;
+      n.setAttribute('tabindex', '0');
       n.addEventListener('mouseenter', () => light(n.dataset.id));
       n.addEventListener('focus', () => light(n.dataset.id));
       n.addEventListener('blur', clear);
@@ -162,155 +177,111 @@
   })();
 
   /* =========================================================
-     6. Transition simulator
-     Illustrative Computer Science → Mathematics example,
-     matching the course data used on the Explore page.
+     5. What-if simulator
+     Illustrative prototype figures — same course data as Explore.
      ========================================================= */
   (function simulator() {
-    const host = $('#sim');
+    const host = $('.sim-card');
     if (!host) return;
-    const chipBox = $('#simChips');
-    const read = $('#simRead');
+    const flow = $('#simFlow');
+    const label = $('#simLabel');
+    const stats = $('#simStats');
     const tabs = $$('.sim-tab', host);
 
-    const DONE = [
-      { code: 'MATH 101', name: 'Calculus I', cr: 3, fate: 'keep' },
-      { code: 'MATH 102', name: 'Calculus II', cr: 3, fate: 'keep' },
-      { code: 'MATH 210', name: 'Linear Algebra', cr: 3, fate: 'keep' },
-      { code: 'STAT 210', name: 'Probability', cr: 3, fate: 'keep' },
-      { code: 'PHYS 101', name: 'Physics I', cr: 4, fate: 'keep' },
-      { code: 'ENG 101', name: 'Academic Writing', cr: 3, fate: 'keep' },
-      { code: 'CS 101', name: 'Programming I', cr: 3, fate: 'elec' },
-      { code: 'CS 102', name: 'Programming II', cr: 3, fate: 'elec' },
-      { code: 'CS 140', name: 'Discrete Structures', cr: 3, fate: 'elec' },
-      { code: 'CS 201', name: 'Data Structures', cr: 3, fate: 'elec' }
-    ];
-    const NEW = [
-      { code: 'MATH 150', name: 'Foundations of Mathematics', cr: 3 },
-      { code: 'MATH 205', name: 'Differential Equations', cr: 3 },
-      { code: 'MATH 220', name: 'Real Analysis I', cr: 3 },
-      { code: 'MATH 301', name: 'Abstract Algebra', cr: 3 },
-      { code: 'MATH 320', name: 'Numerical Methods', cr: 3 }
-    ];
-
-    const sum = (list, fate) => list
-      .filter(c => !fate || c.fate === fate)
-      .reduce((n, c) => n + c.cr, 0);
-
-    const keepCr = sum(DONE, 'keep');
-    const elecCr = sum(DONE, 'elec');
-    const newCr = sum(NEW);
-    const totalCr = sum(DONE);
-
-    const STAGES = [
+    const SCENARIOS = [
       {
-        read: `<strong>${totalCr} credits</strong> completed so far across ${DONE.length} courses.`,
-        chip: () => 'on', extra: false
+        label: 'Computer Science → Mathematics',
+        flow: [
+          ['keep', 'Current path', '24 courses · BSc Computer Science'],
+          ['keep', 'Courses that still count', '10 carry over, including the calculus sequence'],
+          ['warn', 'No longer required', 'The programming track stops counting toward the major'],
+          ['add', 'New requirements', '14 mathematics courses enter the plan'],
+          ['keep', 'Updated pathway', 'Graduation stays within four years']
+        ],
+        stats: [['Courses carried over', '10'], ['New requirements', '14'], ['Credit difference', '+1']]
       },
       {
-        read: `<strong>${keepCr} of ${totalCr} credits</strong> still count directly toward the Mathematics major.`,
-        chip: c => c.fate === 'keep' ? 'keep' : 'off', extra: false
+        label: 'Computer Science + Artificial Intelligence minor',
+        flow: [
+          ['keep', 'Current path', '120 credits · major requirements'],
+          ['keep', 'Overlapping prerequisite', 'Data Structures already unlocks the first AI course'],
+          ['add', 'Minor requirements', '6 AI courses branch off the core path'],
+          ['keep', 'Updated pathway', 'Runs alongside the degree, no extra semester']
+        ],
+        stats: [['Courses added', '6'], ['Additional credits', '+18'], ['Extra semesters', '+0']]
       },
       {
-        read: `<strong>${elecCr} credits</strong> of programming coursework carry over as general electives rather than major requirements.`,
-        chip: c => c.fate === 'elec' ? 'elec' : 'off', extra: false
+        label: 'University of Sharjah → Khalifa University',
+        flow: [
+          ['keep', 'Credits completed', '43 credits at the current university'],
+          ['keep', 'Likely to transfer', 'Courses relevant to the receiving degree'],
+          ['warn', 'May need review', 'Equivalency review for 10 credits'],
+          ['add', 'New requirements', 'A common-core sequence the old plan never had'],
+          ['keep', 'Adjusted pathway', 'Rebuilt around the new structure']
+        ],
+        stats: [['Transferable', '33 cr'], ['May need review', '10 cr'], ['New requirements', '9 cr']]
       },
       {
-        read: `<strong>${NEW.length} new requirements</strong> (${newCr} credits) appear that the Computer Science path never included.`,
-        chip: () => 'off', extra: true
-      },
-      {
-        read: `Net effect: <strong>${keepCr} credits</strong> transfer, <strong>${elecCr}</strong> become electives, <strong>${newCr}</strong> are added. Graduation stays within four years if two of the new requirements are taken next semester.`,
-        chip: c => c.fate === 'keep' ? 'keep' : 'elec', extra: true
+        label: 'Move Database Management to semester 5',
+        flow: [
+          ['keep', 'Pick up a course', 'Drag it to a different semester'],
+          ['warn', 'Check the chain', 'Its prerequisite must still come first'],
+          ['add', 'Valid destinations', 'Only semesters that keep the chain intact light up'],
+          ['keep', 'Path redraws', 'Connection lines follow the course to its new slot']
+        ],
+        stats: [['Prerequisites checked', 'Live'], ['Invalid moves', 'Blocked'], ['Plan saved', 'Yes']]
       }
     ];
 
-    let stage = 0;
-    let auto = null;
+    function draw(n) {
+      const s = SCENARIOS[n];
+      label.textContent = s.label;
 
-    function draw() {
-      const s = STAGES[stage];
-      chipBox.textContent = '';
-      let i = 0;
-
-      DONE.forEach(c => {
-        const el = document.createElement('span');
-        el.className = 'chip-c ' + s.chip(c);
-        el.style.setProperty('--d', i++);
-        el.textContent = c.code;
-        el.title = c.name;
-        chipBox.appendChild(el);
+      flow.textContent = '';
+      s.flow.forEach(([kind, head, detail], i) => {
+        const row = document.createElement('div');
+        row.className = 'flow-row ' + kind;
+        row.style.setProperty('--d', i);
+        row.innerHTML = `<span class="fi"></span><span><b>${head}</b> <span class="ft">— ${detail}</span></span>`;
+        flow.appendChild(row);
       });
 
-      if (s.extra) {
-        NEW.forEach(c => {
-          const el = document.createElement('span');
-          el.className = 'chip-c new';
-          el.style.setProperty('--d', i++);
-          el.textContent = c.code;
-          el.title = c.name;
-          chipBox.appendChild(el);
-        });
-      }
+      stats.textContent = '';
+      s.stats.forEach(([k, v], i) => {
+        const box = document.createElement('div');
+        box.className = 'sim-stat';
+        box.style.setProperty('--d', i);
+        box.innerHTML = `<span>${k}</span><b>${v}</b>`;
+        stats.appendChild(box);
+      });
 
-      read.innerHTML = s.read;
-      tabs.forEach((t, n) => {
-        t.classList.toggle('is-on', n === stage);
-        t.setAttribute('aria-selected', String(n === stage));
+      tabs.forEach((t, i) => {
+        t.classList.toggle('is-on', i === n);
+        t.setAttribute('aria-selected', String(i === n));
       });
     }
 
-    function go(n, manual) {
-      stage = (n + STAGES.length) % STAGES.length;
-      draw();
-      if (manual && auto) { clearInterval(auto); auto = null; }
-    }
+    let current = 0, auto = null;
+    tabs.forEach((t, i) => t.addEventListener('click', () => {
+      current = i;
+      draw(i);
+      if (auto) { clearInterval(auto); auto = null; }
+    }));
 
-    tabs.forEach(t => t.addEventListener('click', () => go(Number(t.dataset.stage), true)));
-    draw();
-
-    /* advance on its own until the visitor takes over */
+    draw(0);
     if (!reduceMotion) {
       onView(host, () => {
-        auto = setInterval(() => { if (auto) go(stage + 1); }, 3200);
-      }, 0.35);
+        auto = setInterval(() => {
+          if (!auto) return;
+          current = (current + 1) % SCENARIOS.length;
+          draw(current);
+        }, 5200);
+      }, 0.3);
     }
   })();
 
   /* =========================================================
-     7. Uncertainty → clarity
-     ========================================================= */
-  (function clarity() {
-    const wrap = $('#clarity');
-    const field = $('#clarityField');
-    if (!field) return;
-
-    const COUNT = 26;
-    let seed = 20260913;
-    const rand = () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
-
-    const dots = [];
-    for (let i = 0; i < COUNT; i++) {
-      const d = document.createElement('i');
-      d.style.setProperty('--d', i);
-      d.style.left = (rand() * 96) + '%';
-      d.style.top = (rand() * 84) + '%';
-      field.appendChild(d);
-      dots.push(d);
-    }
-
-    onView(wrap, () => {
-      wrap.classList.add('is-in');
-      dots.forEach((d, i) => {
-        /* settle into an even, rising line */
-        d.style.left = ((i / (COUNT - 1)) * 96) + '%';
-        d.style.top = (66 - (i / (COUNT - 1)) * 52) + '%';
-      });
-    }, 0.35);
-  })();
-
-  /* =========================================================
-     8. Site chrome: nav, magnetic buttons, drifting orbs
+     6. Site chrome
      ========================================================= */
   const nav = $('#nav');
   const onScroll = () => nav.classList.toggle('is-stuck', window.scrollY > 24);

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Problem &amp; Solution — DegreeFlow</title>
-<meta name="description" content="Changing your major shouldn't mean starting over. Why degree audits fall short, what the research says, and how DegreeFlow makes the consequences visible." />
+<meta name="description" content="Students can see their current degree requirements, but not what happens when they change something. DegreeFlow turns academic decisions into a visual, explorable pathway." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,15 +16,12 @@
 
 <div class="bg-field" aria-hidden="true">
   <span class="ribbon"></span>
-  <span class="orb orb-a"></span>
-  <span class="orb orb-b"></span>
-  <span class="orb orb-c"></span>
-  <span class="orb orb-d"></span>
-  <span class="orb orb-e"></span>
+  <span class="orb orb-a"></span><span class="orb orb-b"></span><span class="orb orb-c"></span>
+  <span class="orb orb-d"></span><span class="orb orb-e"></span>
 </div>
 <div class="grain-layer" aria-hidden="true"></div>
 
-<a class="skip" href="#problem">Skip to content</a>
+<a class="skip" href="#hero">Skip to content</a>
 
 <header class="nav-wrap">
   <nav class="nav" id="nav" aria-label="Primary">
@@ -33,11 +30,9 @@
 
       <span class="brand-name">DegreeFlow</span>
     </a>
-
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
       <span></span><span></span>
     </button>
-
     <div class="nav-links" id="navLinks">
       <a href="index.html" class="nav-link">Home</a>
       <a href="problem-solution.html" class="nav-link is-current" aria-current="page">Problem &amp; Solution</a>
@@ -49,378 +44,374 @@
 
 <main>
 
-<!-- ══════════════ 1. HERO ══════════════ -->
-<section class="ps-hero" id="problem">
-  <div class="shell ps-hero-grid">
-    <div class="ps-hero-copy">
+<!-- ═══════════ 1. HERO ═══════════ -->
+<section class="hero-ps" id="hero">
+  <div class="shell hero-grid">
+    <div class="hero-copy">
       <p class="eyebrow">The problem</p>
-      <h1 class="ps-title">Changing your major<br />shouldn't mean <em class="grad-word">starting over</em>.</h1>
-      <p class="ps-lead">
-        Students change their majors, minors and academic plans all the time — but understanding
-        what actually happens to their degree progress can be surprisingly difficult.
+      <h1 class="hero-h1">Your degree isn't<br />a <em class="grad-word">straight line</em>.</h1>
+      <p class="hero-sub">But most academic planning tools treat it like one.</p>
+      <p class="hero-body">
+        Students are constantly making decisions that change their academic path — switching majors,
+        adding minors, rearranging courses, changing universities, or trying to graduate earlier.
+        Yet understanding the consequences of those decisions often means manually comparing
+        requirements, prerequisites, credits and course schedules.
       </p>
-      <blockquote class="pull">
-        Existing degree audit tools are designed to show you where you are,
-        not what happens if you change direction.
-      </blockquote>
-      <a class="btn btn-ghost magnetic" href="#solution">See the solution <span class="arrow down">↓</span></a>
+      <div class="hero-actions">
+        <a class="btn btn-primary magnetic" href="explore.html">Explore Your Path <span class="arrow">→</span></a>
+        <a class="btn btn-ghost magnetic" href="#evidence">See the evidence <span class="arrow down">↓</span></a>
+      </div>
     </div>
 
-    <!-- fragmented pathway: a degree that stopped lining up -->
-    <div class="frag-wrap" aria-hidden="true">
-      <svg class="frag" viewBox="0 0 460 420" role="img">
+    <!-- one degree, many possible futures -->
+    <div class="branch-wrap">
+      <svg class="branch" viewBox="0 0 520 400" role="img"
+           aria-label="A single current degree branching into four possible futures: add a minor, change major, change university, and rearrange courses — all leading to graduation.">
         <defs>
-          <linearGradient id="psLive" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="psG" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stop-color="#4DA3FF" /><stop offset="100%" stop-color="#9B8CFF" />
           </linearGradient>
+          <linearGradient id="psMint" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#5EE6A8" /><stop offset="100%" stop-color="#4DA3FF" />
+          </linearGradient>
         </defs>
-        <g class="frag-edges">
-          <path class="fe live" d="M60,100 C120,100 120,70 180,70" />
-          <path class="fe live" d="M60,100 C120,100 120,150 180,150" />
-          <path class="fe live" d="M180,70 C240,70 240,110 300,110" />
-          <path class="fe cut"  d="M180,150 C240,150 240,200 296,200" />
-          <path class="fe lost" d="M300,110 C360,110 360,90 410,90" />
-          <path class="fe lost" d="M296,200 C350,200 350,250 400,250" />
-          <path class="fe lost" d="M120,290 C200,290 220,330 300,330" />
+
+        <g class="br-edges">
+          <path class="be spine" d="M40,200 L190,200" />
+          <path class="be f" data-f="0" d="M190,200 C240,200 240,70 310,70" />
+          <path class="be f" data-f="1" d="M190,200 C240,200 240,140 310,140" />
+          <path class="be f" data-f="2" d="M190,200 C240,200 240,255 310,255" />
+          <path class="be f" data-f="3" d="M190,200 C240,200 240,330 310,330" />
+          <path class="be g" data-f="0" d="M310,70 C390,70 400,180 455,195" />
+          <path class="be g" data-f="1" d="M310,140 C390,140 400,180 455,195" />
+          <path class="be g" data-f="2" d="M310,255 C390,255 400,205 455,200" />
+          <path class="be g" data-f="3" d="M310,330 C390,330 400,215 455,205" />
         </g>
-        <g class="frag-nodes">
-          <g class="fn done" style="--i:0"><circle cx="60" cy="100" r="11" /><text x="60" y="132">MATH 101</text></g>
-          <g class="fn done" style="--i:1"><circle cx="180" cy="70" r="11" /><text x="180" y="46">MATH 102</text></g>
-          <g class="fn done" style="--i:2"><circle cx="180" cy="150" r="11" /><text x="180" y="182">CS 102</text></g>
-          <g class="fn now"  style="--i:3"><circle cx="300" cy="110" r="12" /><text x="300" y="86">MATH 210</text></g>
-          <g class="fn orphan" style="--i:4"><circle cx="296" cy="200" r="11" /><text x="296" y="232">CS 201</text></g>
-          <g class="fn locked" style="--i:5"><circle cx="410" cy="90" r="10" /><text x="410" y="66">?</text></g>
-          <g class="fn locked" style="--i:6"><circle cx="400" cy="250" r="10" /><text x="400" y="282">?</text></g>
-          <g class="fn orphan" style="--i:7"><circle cx="120" cy="290" r="11" /><text x="120" y="322">PHYS 101</text></g>
-          <g class="fn locked" style="--i:8"><circle cx="300" cy="330" r="10" /><text x="300" y="362">?</text></g>
-        </g>
-        <g class="frag-breaks">
-          <path class="brk" d="M244,168 l16,16 M260,168 l-16,16" />
-          <path class="brk" d="M222,300 l16,16 M238,300 l-16,16" />
+
+        <g class="br-nodes">
+          <!--  <g class="bn now"><circle cx="40" cy="200" r="13" /><text x="40" y="232">Today</text></g> -->
+          <g class="bn hub"><circle cx="190" cy="200" r="9" /></g>
+          <g class="bn alt" data-f="0"><circle cx="310" cy="70" r="10" /><text x="310" y="48">Add a minor</text></g>
+          <g class="bn alt" data-f="1"><circle cx="310" cy="140" r="10" /><text x="310" y="118">Change major</text></g>
+          <g class="bn alt" data-f="2"><circle cx="310" cy="255" r="10" /><text x="310" y="285">Change university</text></g>
+          <g class="bn alt" data-f="3"><circle cx="310" cy="330" r="10" /><text x="310" y="360">Rearrange courses</text></g>
+          <g class="bn grad"><circle cx="455" cy="200" r="14" /><text x="455" y="238">Graduate</text></g>
         </g>
       </svg>
-      <p class="frag-cap">Some courses still count. Some quietly stop counting. Most students find out late.</p>
+      <p class="branch-cap">One degree. Many possible paths. Most tools show you only the first one.</p>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ 2. THE PROBLEM ══════════════ -->
-<section class="ps-section" id="cost">
+<!-- ═══════════ 2. THE ACTUAL PROBLEM ═══════════ -->
+<section class="sec" id="gap">
   <div class="shell">
-    <header class="ps-head reveal">
-      <p class="eyebrow">What goes wrong</p>
-      <h2>The hidden cost of changing direction</h2>
-      <p class="ps-sub">Three problems compound into one: by the time the consequences are visible, they have already happened.</p>
+    <header class="sec-head reveal">
+      <p class="eyebrow">The gap</p>
+      <h2>The problem isn't knowing what you have.<br />It's knowing what happens next.</h2>
+      <p class="sec-sub">Most degree audit systems are built to answer one question well. Students are asking a different one.</p>
     </header>
 
-    <div class="prob-grid">
-      <article class="prob reveal" style="--i:0">
-        <span class="prob-num">01</span>
-        <h3>Unclear degree audits</h3>
-        <p>Traditional audits tell students whether courses currently count toward their degree, but rarely make it easy to explore a hypothetical scenario.</p>
+    <div class="split">
+      <article class="split-col old reveal">
+        <p class="split-tag">What a degree audit answers</p>
+        <ul class="audit-list">
+          <li>Completed courses</li>
+          <li>Remaining requirements</li>
+          <li>GPA</li>
+          <li>Credits earned</li>
+        </ul>
+        <p class="split-foot">A snapshot of one fixed path — accurate, and static.</p>
       </article>
-      <article class="prob reveal" style="--i:1">
-        <span class="prob-num">02</span>
-        <h3>Uncertainty around lost credits</h3>
-        <p>When switching majors, students may not know which completed courses still count, which become electives, and which no longer contribute to graduation.</p>
-      </article>
-      <article class="prob reveal" style="--i:2">
-        <span class="prob-num">03</span>
-        <h3>The domino effect</h3>
-        <p>Changing one course or major affects prerequisites, sequencing and graduation requirements — and ultimately time and tuition.</p>
-      </article>
-    </div>
 
-    <!-- animated domino chain -->
-    <div class="domino reveal" id="domino">
-      <ol class="dom-list">
-        <li class="dom" style="--i:0"><span class="dom-dot"></span><p>Major change</p></li>
-        <li class="dom" style="--i:1"><span class="dom-dot"></span><p>Different requirements</p></li>
-        <li class="dom" style="--i:2"><span class="dom-dot"></span><p>Courses no longer apply</p></li>
-        <li class="dom" style="--i:3"><span class="dom-dot"></span><p>Additional courses</p></li>
-        <li class="dom" style="--i:4"><span class="dom-dot"></span><p>Delayed graduation, higher cost</p></li>
-      </ol>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════ 3 + 4. RESEARCH ══════════════ -->
-<section class="ps-section" id="research">
-  <div class="shell">
-    <header class="ps-head reveal">
-      <p class="eyebrow">Evidence</p>
-      <h2>This isn't just a hypothetical problem</h2>
-      <p class="ps-sub">
-        The figures below come from U.S. federal data and peer-reviewed research. They describe
-        <strong>U.S. undergraduates</strong> — DegreeFlow is being designed for a UAE university
-        context, so treat them as evidence that the problem is real and widespread, not as local statistics.
-      </p>
-    </header>
-
-    <div class="stat-row reveal">
-      <div class="stat-big">
-        <div class="ring" data-pct="30">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="ring-bg" cx="60" cy="60" r="52" />
-            <circle class="ring-fg" cx="60" cy="60" r="52" />
-          </svg>
-          <span class="ring-num" data-count="30">0<i>%</i></span>
+      <article class="split-col new reveal">
+        <p class="split-tag mint">What students actually ask</p>
+        <div class="asker">
+          <span class="ask-q" id="askQ">What if I add a minor?</span>
         </div>
-        <div class="stat-text">
-          <h3>changed their major within three years</h3>
-          <p>Of U.S. undergraduates in associate's and bachelor's programmes who had declared a major. About 1 in 10 changed more than once.</p>
-        </div>
-      </div>
-
-      <div class="stat-big">
-        <div class="ring" data-pct="52">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="ring-bg" cx="60" cy="60" r="52" />
-            <circle class="ring-fg alt" cx="60" cy="60" r="52" />
-          </svg>
-          <span class="ring-num" data-count="52">0<i>%</i></span>
-        </div>
-        <div class="stat-text">
-          <h3>of mathematics majors switched fields</h3>
-          <p>The highest rate of any field of study in the data — higher than every other STEM and non-STEM field except the natural sciences.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- field of study chart -->
-    <div class="chart-panel reveal">
-      <div class="chart-head">
-        <h3>Who changes major, by original field of study</h3>
-        <p>Percentage of 2011–12 beginning U.S. postsecondary students who had ever changed major by 2014.</p>
-      </div>
-      <div class="bars" id="bars">
-        <div class="bar-row" data-val="52" data-tone="hot"><span class="bar-label">Mathematics</span><span class="bar-track"><i></i></span><span class="bar-val">52%</span></div>
-        <div class="bar-row" data-val="40" data-tone="hot"><span class="bar-label">Natural sciences</span><span class="bar-track"><i></i></span><span class="bar-val">40%</span></div>
-        <div class="bar-row" data-val="35" data-tone="mid"><span class="bar-label">All STEM</span><span class="bar-track"><i></i></span><span class="bar-val">35%</span></div>
-        <div class="bar-row" data-val="32" data-tone="mid"><span class="bar-label">Engineering</span><span class="bar-track"><i></i></span><span class="bar-val">32%</span></div>
-        <div class="bar-row" data-val="29" data-tone="cool"><span class="bar-label">All non-STEM</span><span class="bar-track"><i></i></span><span class="bar-val">29%</span></div>
-        <div class="bar-row" data-val="28" data-tone="cool"><span class="bar-label">Computer &amp; info. sciences</span><span class="bar-track"><i></i></span><span class="bar-val">28%</span></div>
-        <div class="bar-row" data-val="26" data-tone="cool"><span class="bar-label">Health care fields</span><span class="bar-track"><i></i></span><span class="bar-val">26%</span></div>
-      </div>
-      <p class="chart-src">
-        U.S. Department of Education, NCES 2018-434, based on the 2012/14 Beginning Postsecondary
-        Students Longitudinal Study.
-        <a href="https://nces.ed.gov/pubs2018/2018434/" target="_blank" rel="noopener">Source ↗</a>
-      </p>
-    </div>
-
-    <div class="src-grid">
-      <article class="src reveal" style="--i:0">
-        <p class="src-tag">National Center for Education Statistics · 2017</p>
-        <h3>Major change is normal, not rare</h3>
-        <p>Roughly a third of students in bachelor's programmes changed major within three years, and 35% of those who started in a STEM field changed course, compared with 29% outside STEM.</p>
-        <a href="https://nces.ed.gov/pubs2018/2018434/" target="_blank" rel="noopener">Read the data point ↗</a>
-      </article>
-
-      <article class="src reveal" style="--i:1">
-        <p class="src-tag">Community College Research Center, Columbia · 2020</p>
-        <h3>The cost shows up in credits</h3>
-        <p>Liu, Mishra and Kopko found switching can delay completion through excess credits — or improve it through a better academic match. Their recommendation: don't discourage switching, plan for it, with flexible application of credits so students can revise their goals without losing time and tuition.</p>
-        <a href="https://ccrc.tc.columbia.edu/publications/major-switching-academic-outcomes-community-colleges.html" target="_blank" rel="noopener">Read the research ↗</a>
-      </article>
-
-      <article class="src reveal" style="--i:2">
-        <p class="src-tag">Discover Education · Open access · June 2026</p>
-        <h3>It is a transition, not a form</h3>
-        <p>Higgerson interviewed 13 undergraduates who changed major. Students described stress and uncertainty alongside optimism, and leaned on advising, institutional resources and online catalogue tools to work out where they stood.</p>
-        <a href="https://link.springer.com/article/10.1007/s44217-026-01805-2" target="_blank" rel="noopener">Read the study ↗</a>
+        <p class="split-foot">
+          To answer these, students work through course catalogues, prerequisite lists,
+          degree audits, advisor appointments, spreadsheets and trial and error.
+        </p>
       </article>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ 5. STUDENT VOICE (PLACEHOLDER) ══════════════ -->
-<section class="ps-section" id="voice">
+<!-- ═══════════ 3. FOUR WHAT-IF DECISIONS ═══════════ -->
+<section class="sec" id="scenarios">
   <div class="shell">
-    <header class="ps-head reveal">
-      <p class="eyebrow">Our own research</p>
-      <h2>What students say</h2>
+    <header class="sec-head reveal">
+      <p class="eyebrow">Four decisions</p>
+      <h2>Every one of these reshapes the same map.</h2>
     </header>
 
-    <div class="survey reveal">
-      <div class="survey-head">
-        <span class="badge">Student survey — coming soon</span>
-        <p>We are collecting responses from university students. Nothing in this section is real data yet.</p>
-      </div>
-      <ul class="survey-list">
-        <li>How easy it is to understand their degree requirements</li>
-        <li>Whether they have considered changing majors</li>
-        <li>Whether they understand which credits would transfer</li>
-        <li>How confident they feel about the consequences of changing path</li>
-      </ul>
-    </div>
+    <div class="wi-grid">
+      <article class="wi reveal" style="--i:0">
+        <p class="wi-num">01</p>
+        <h3>Change your major</h3>
+        <p class="wi-ex">Computer Science → Mathematics</p>
+        <ul>
+          <li>Which completed courses still count?</li>
+          <li>What becomes a new requirement?</li>
+          <li>How does the graduation path change?</li>
+        </ul>
+      </article>
 
-    <!--
-      ══════════════════════════════════════════════════════════════
-      STUDENT QUOTES — REPLACE AFTER SURVEY COLLECTION
-      Replace the three .quote.is-placeholder cards below with real
-      responses. Keep the same structure and drop the
-      "is-placeholder" class and the .skeleton block:
+      <article class="wi reveal" style="--i:1">
+        <p class="wi-num">02</p>
+        <h3>Add a minor</h3>
+        <p class="wi-ex">Computer Science + AI minor</p>
+        <ul>
+          <li>Which courses overlap?</li>
+          <li>Which additional courses are required?</li>
+          <li>Can it fit the existing schedule?</li>
+        </ul>
+      </article>
 
-      <figure class="quote reveal">
-        <blockquote>Real student response goes here.</blockquote>
-        <figcaption>Year 2 · Computer Science</figcaption>
-      </figure>
-      ══════════════════════════════════════════════════════════════
-    -->
-    <div class="quote-grid">
-      <figure class="quote is-placeholder reveal" style="--i:0">
-        <span class="q-mark">"</span>
-        <div class="skeleton"><i></i><i></i><i></i></div>
-        <blockquote>Student quote will appear here after survey collection.</blockquote>
-        <figcaption>Awaiting response</figcaption>
-      </figure>
-      <figure class="quote is-placeholder reveal" style="--i:1">
-        <span class="q-mark">"</span>
-        <div class="skeleton"><i></i><i></i><i></i></div>
-        <blockquote>Student quote will appear here after survey collection.</blockquote>
-        <figcaption>Awaiting response</figcaption>
-      </figure>
-      <figure class="quote is-placeholder reveal" style="--i:2">
-        <span class="q-mark">"</span>
-        <div class="skeleton"><i></i><i></i><i></i></div>
-        <blockquote>Student quote will appear here after survey collection.</blockquote>
-        <figcaption>Awaiting response</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
+      <article class="wi reveal" style="--i:2">
+        <p class="wi-num">03</p>
+        <h3>Change university</h3>
+        <p class="wi-ex">University A → University B</p>
+        <ul>
+          <li>Which credits may transfer?</li>
+          <li>Which courses have equivalents?</li>
+          <li>What changes in the pathway?</li>
+        </ul>
+        <p class="wi-note">Actual transfer decisions rest with the receiving university. DegreeFlow simulates a possible pathway — it is not a transfer-credit authority.</p>
+      </article>
 
-<!-- ══════════════ 6. THE SOLUTION ══════════════ -->
-<section class="ps-section solution" id="solution">
-  <div class="shell">
-    <header class="ps-head reveal">
-      <p class="eyebrow mint">The solution</p>
-      <h2>Meet DegreeFlow</h2>
-      <p class="ps-sub">Instead of asking students to imagine what happens when they change direction, DegreeFlow lets them see it.</p>
-    </header>
-
-    <div class="sol-grid">
-      <article class="sol-card reveal">
-        <h3>Interactive degree map</h3>
-        <p>Courses become nodes. Prerequisites become connections. Hover any course to light up what it depends on and what it unlocks.</p>
-        <svg class="mini-graph" id="miniGraph" viewBox="0 0 420 220" role="img" aria-label="Course map: Calculus I leads to Calculus II and Statistics; Programming I leads to Computer Science and AI.">
-          <g class="mg-edges">
-            <path data-from="c1" data-to="c2" d="M50,60 C100,60 100,60 160,60" />
-            <path data-from="c2" data-to="st" d="M160,60 C220,60 240,55 310,55" />
-            <path data-from="c1" data-to="p1" d="M50,60 C90,60 80,150 150,150" />
-            <path data-from="p1" data-to="cs" d="M150,150 C210,150 220,150 270,150" />
-            <path data-from="cs" data-to="ai" d="M270,150 C320,150 330,185 375,185" />
-          </g>
-          <g class="mg-nodes">
-            <g class="mg" data-id="c1"><circle cx="50" cy="60" r="10" /><text x="50" y="38">Calculus I</text></g>
-            <g class="mg" data-id="c2"><circle cx="160" cy="60" r="10" /><text x="160" y="38">Calculus II</text></g>
-            <g class="mg" data-id="st"><circle cx="310" cy="55" r="10" /><text x="310" y="33">Statistics</text></g>
-            <g class="mg" data-id="p1"><circle cx="150" cy="150" r="10" /><text x="150" y="176">Programming I</text></g>
-            <g class="mg" data-id="cs"><circle cx="270" cy="150" r="10" /><text x="270" y="176">Computer Science</text></g>
-            <g class="mg" data-id="ai"><circle cx="375" cy="185" r="10" /><text x="375" y="209">AI</text></g>
-          </g>
+      <article class="wi reveal" style="--i:3">
+        <p class="wi-num">04</p>
+        <h3>Rebuild your course plan</h3>
+        <p class="wi-ex">Move a course to another semester</p>
+        <ul>
+          <li>What happens if a prerequisite moves?</li>
+          <li>Does one change start a chain reaction?</li>
+          <li>Can later courses still be taken?</li>
+        </ul>
+        <svg class="chain" viewBox="0 0 300 60" aria-hidden="true">
+          <path class="ch-line" d="M24,30 H90 M110,30 H176 M196,30 H262" />
+          <circle class="ch-dot a" cx="14" cy="30" r="9" />
+          <circle class="ch-dot b" cx="100" cy="30" r="9" />
+          <circle class="ch-dot c" cx="186" cy="30" r="9" />
+          <circle class="ch-dot d" cx="272" cy="30" r="9" />
         </svg>
       </article>
-
-      <article class="sol-card reveal">
-        <h3>Transition simulation</h3>
-        <p>Pick a change and watch the consequences resolve, stage by stage.</p>
-
-        <div class="sim" id="sim">
-          <p class="sim-switch"><b>Computer Science</b> <span>→</span> <b class="mint">Mathematics</b></p>
-
-          <div class="sim-stages" role="tablist" aria-label="Simulation stage">
-            <button class="sim-tab is-on" role="tab" aria-selected="true" data-stage="0">Completed</button>
-            <button class="sim-tab" role="tab" aria-selected="false" data-stage="1">Still counts</button>
-            <button class="sim-tab" role="tab" aria-selected="false" data-stage="2">Becomes elective</button>
-            <button class="sim-tab" role="tab" aria-selected="false" data-stage="3">New requirements</button>
-            <button class="sim-tab" role="tab" aria-selected="false" data-stage="4">To graduation</button>
-          </div>
-
-          <div class="sim-chips" id="simChips"></div>
-          <p class="sim-read" id="simRead"></p>
-          <p class="sim-note">Illustrative example using the same course data as the Explore page.</p>
-        </div>
-      </article>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ 7. BEFORE VS AFTER ══════════════ -->
-<section class="ps-section" id="compare">
+<!-- ═══════════ 4 + 5. RESEARCH ═══════════ -->
+<section class="sec" id="evidence">
   <div class="shell">
-    <header class="ps-head reveal">
+    <header class="sec-head reveal">
+      <p class="eyebrow">Evidence</p>
+      <h2>Academic decisions are complex, and students want better information.</h2>
+      <p class="sec-sub">
+        The figures below come from published research conducted in the UAE, plus the UAE Ministry of
+        Education's higher-education inspection framework. They do not measure demand for DegreeFlow —
+        they establish that the decision itself is hard.
+      </p>
+    </header>
+
+    <div class="stats reveal">
+      <article class="stat">
+        <p class="stat-n" data-count="1725">0</p>
+        <p class="stat-l">UAE undergraduate students</p>
+        <p class="stat-d">surveyed on academic advising and major change, across all year levels.</p>
+        <a class="stat-src" href="https://www.mdpi.com/2076-0760/6/4/151" target="_blank" rel="noopener">Jaradat, Social Sciences (2017) ↗</a>
+      </article>
+
+      <article class="stat">
+        <p class="stat-n" data-count="45.6" data-suffix="%">0</p>
+        <p class="stat-l">reported no influence of advising</p>
+        <p class="stat-d">on their major decision. The same study found students most often change major in second year.</p>
+        <a class="stat-src" href="https://www.mdpi.com/2076-0760/6/4/151" target="_blank" rel="noopener">Read the study ↗</a>
+      </article>
+
+      <article class="stat">
+        <p class="stat-n" data-count="496">0</p>
+        <p class="stat-l">UAE undergraduates at Zayed University</p>
+        <p class="stat-d">surveyed on how they choose a major and what information would help. Mostly first-year, predominantly female.</p>
+        <a class="stat-src" href="https://www.mdpi.com/2227-7102/13/1/39" target="_blank" rel="noopener">Kuhail et al., Education Sciences (2023) ↗</a>
+      </article>
+    </div>
+
+    <p class="read-note reveal">
+      Advising matters. The point is not that advisors fail students — it is that students also need
+      tools to explore possibilities independently, before and between those conversations.
+    </p>
+
+    <div class="ev-grid">
+      <article class="ev reveal" style="--i:0">
+        <p class="ev-tag">How students research a major</p>
+        <div class="ev-bars" id="evBars">
+          <div class="ev-row" data-val="85"><span>Searched the internet</span><span class="ev-track"><i></i></span><b>85%</b></div>
+          <div class="ev-row" data-val="90"><span>Discussed it with family</span><span class="ev-track"><i></i></span><b>90%</b></div>
+          <div class="ev-row" data-val="82"><span>Used social media</span><span class="ev-track"><i></i></span><b>82%</b></div>
+        </div>
+        <p class="ev-body">
+          In that Zayed University survey, only three students out of 496 mentioned reading the
+          major's actual requirements as part of their decision. Students research careers thoroughly.
+          The structure of the degree itself is where the information gap sits.
+        </p>
+        <a class="ev-src" href="https://www.mdpi.com/2227-7102/13/1/39" target="_blank" rel="noopener">Source ↗</a>
+      </article>
+
+      <article class="ev reveal" style="--i:1">
+        <p class="ev-tag">A student voice</p>
+        <blockquote class="quote">
+          <span class="q-mark">"</span>
+          Advising is useless. I still don't understand many things.
+        </blockquote>
+        <p class="ev-body">
+          One of 152 first-year students surveyed at an American university in the UAE. In the same
+          study, the registration process ranked as the second-largest source of academic stress —
+          above teaching style — and academic advisors ranked sixth of nine sources of support.
+        </p>
+        <a class="ev-src" href="https://www.emerald.com/lthe/article/17/2/121/276524/Adapting-to-transnational-education-students" target="_blank" rel="noopener">Mikecz Munday (2021), open access ↗</a>
+      </article>
+    </div>
+
+    <div class="policy reveal">
+      <div>
+        <p class="ev-tag">Why changing university is not simple</p>
+        <p class="ev-body">
+          The UAE Ministry of Education's inspection framework requires that undergraduate transfer
+          credits be awarded only for courses relevant to the receiving degree, and that credit is not
+          granted twice for the same course taken at two institutions. Which is exactly why a student
+          needs to see how their completed courses map onto a different degree before they commit.
+        </p>
+        <a class="ev-src" href="https://www.moe.gov.ae/En/ImportantLinks/Documents/HE-Inspection-Framework-2023.pdf" target="_blank" rel="noopener">Framework for Compliance Inspection of HEIs, 2023 (metric 7.4.5) ↗</a>
+      </div>
+      <p class="policy-note"><b>DegreeFlow simulates a possible pathway</b> from available course and degree data. Official credit decisions always remain with the university.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 6 + 7. THE SOLUTION / LIVING MAP ═══════════ -->
+<section class="sec solution" id="solution">
+  <div class="shell">
+    <header class="sec-head reveal">
+      <p class="eyebrow mint">The solution</p>
+      <h2>What if you could see the consequences before making the decision?</h2>
+      <p class="sec-sub">
+        DegreeFlow turns your degree requirements into an interactive map — letting you explore
+        different academic scenarios before committing to them.
+      </p>
+    </header>
+
+    
+  </div>
+</section>
+
+<!-- ═══════════ 8. WHAT-IF SIMULATION ═══════════ -->
+<section class="sec" id="simulate">
+  <div class="shell">
+    <header class="sec-head reveal">
+      <p class="eyebrow">The experience</p>
+      <h2>Change one decision. Watch the path respond.</h2>
+    </header>
+
+    <div class="sim-card reveal">
+      <div class="sim-tabs" role="tablist" aria-label="Scenario">
+        <button class="sim-tab is-on" role="tab" aria-selected="true" data-s="0">Change Major</button>
+        <button class="sim-tab" role="tab" aria-selected="false" data-s="1">Add Minor</button>
+        <button class="sim-tab" role="tab" aria-selected="false" data-s="2">Change University</button>
+        <button class="sim-tab" role="tab" aria-selected="false" data-s="3">Course Rearrangement</button>
+      </div>
+
+      <div class="sim-body">
+        <div class="sim-flow" id="simFlow"></div>
+        <div class="sim-side">
+          <p class="sim-label" id="simLabel"></p>
+          <div class="sim-stats" id="simStats"></div>
+          <p class="sim-note">Illustrative figures, using the same prototype course data as the Explore page.</p>
+          <a class="btn btn-primary btn-sm magnetic" href="explore.html">Try it yourself <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 9. FUTURE POSSIBILITIES ═══════════ -->
+<section class="sec" id="future">
+  <div class="shell">
+    <header class="sec-head reveal">
+      <p class="eyebrow">Concepts</p>
+      <h2>And the map can go further.</h2>
+      <p class="sec-sub">These are design concepts, not built features. Nothing below exists in the prototype yet.</p>
+    </header>
+
+    <div class="fut-grid">
+      <article class="fut reveal" style="--i:0"><span class="fut-badge">Concept</span><h3>GPA what-if</h3><p>What would my GPA look like if I earned different grades?</p></article>
+      <article class="fut reveal" style="--i:1"><span class="fut-badge">Concept</span><h3>Summer semester</h3><p>Could taking courses over summer help me graduate earlier?</p></article>
+      <article class="fut reveal" style="--i:2"><span class="fut-badge">Concept</span><h3>Course Retake</h3><p>What happens if I move this course to another semester?</p></article>
+      <article class="fut reveal" style="--i:3"><span class="fut-badge">Concept</span><h3>Graduation timeline</h3><p>What's the earliest realistic path based on my remaining requirements?</p></article>
+      <article class="fut reveal" style="--i:4"><span class="fut-badge">Concept</span><h3>Path comparison</h3><p>Which of these two degree plans gets me where I want to go?</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 10. BEFORE VS AFTER ═══════════ -->
+<section class="sec" id="compare">
+  <div class="shell">
+    <header class="sec-head reveal">
       <p class="eyebrow">Before and after</p>
-      <h2>Same decision. Different process.</h2>
+      <h2>Same question. Different process.</h2>
     </header>
 
     <div class="vs">
-      <div class="vs-col old reveal">
-        <p class="vs-tag">Traditional planning</p>
+      <div class="vs-col vs-old reveal">
+        <p class="vs-tag">Without DegreeFlow</p>
         <ol class="vs-steps">
-          <li>Open the degree audit</li>
-          <li>Search the course catalogue</li>
-          <li>Book time with an advisor</li>
-          <li>Manually compare requirements</li>
-          <li>Try to estimate lost credits</li>
-          <li>Hope the plan works</li>
+          <li>Degree audit</li><li>Course catalogue</li><li>Prerequisite list</li>
+          <li>University policy pages</li><li>Advisor appointment</li><li>Spreadsheet</li>
+          <li>Manual calculations</li><li class="vs-end">Uncertainty</li>
         </ol>
-        <p class="vs-foot">Answers arrive one conversation at a time.</p>
       </div>
-
-      <div class="vs-col new reveal">
-        <p class="vs-tag mint">DegreeFlow</p>
+      <div class="vs-col vs-new reveal">
+        <p class="vs-tag mint">With DegreeFlow</p>
         <ol class="vs-steps">
-          <li>Choose a new major</li>
-          <li>See your current credits on the map</li>
-          <li>See exactly what transfers</li>
-          <li>Explore what is still required</li>
-          <li>Simulate the new path</li>
-          <li>Decide with the consequences visible</li>
+          <li>Choose a scenario</li><li>Visualize your current credits</li><li>Explore the consequences</li>
+          <li>See prerequisite relationships</li><li>Compare pathways</li>
+          <li class="vs-end mint">Make a more informed decision</li>
         </ol>
-        <p class="vs-foot mint">Answers arrive as you change the input.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ 8. WHY IT MATTERS ══════════════ -->
-<section class="ps-section" id="matters">
+<!-- ═══════════ 11. WHY IT MATTERS ═══════════ -->
+<section class="sec" id="matters">
   <div class="shell">
-    <header class="ps-head reveal">
+    <header class="sec-head reveal">
       <p class="eyebrow">Why this matters</p>
-      <h2>Clarity is the product</h2>
+      <h2>Visibility is the product.</h2>
     </header>
 
-    <div class="matter-grid">
-      <article class="matter reveal" style="--i:0">
-        <p class="matter-key">Time</p>
-        <p>Seeing which requirements remain can help students avoid courses that no longer move them toward graduation.</p>
-      </article>
-      <article class="matter reveal" style="--i:1">
-        <p class="matter-key">Money</p>
-        <p>Fewer unnecessary credits can mean lower tuition cost. Research links major switching to excess credit accumulation — the potential saving depends on the institution.</p>
-      </article>
-      <article class="matter reveal" style="--i:2">
-        <p class="matter-key">Confidence</p>
-        <p>Students can explore an academic change with a clearer understanding of what follows from it, before committing.</p>
-      </article>
+    <div class="why-grid">
+      <article class="why reveal" style="--i:0"><p class="why-k">Time</p><p>Understand how academic decisions may affect your graduation timeline.</p></article>
+      <article class="why reveal" style="--i:1"><p class="why-k">Money</p><p>Identify unnecessary coursework and understand the potential academic cost of different paths.</p></article>
+      <article class="why reveal" style="--i:2"><p class="why-k">Confidence</p><p>Explore decisions before committing to them, instead of trying to calculate the consequences mentally.</p></article>
     </div>
 
-    <div class="clarity reveal" id="clarity" aria-hidden="true">
-      <span class="clarity-label">Uncertainty</span>
-      <div class="clarity-field" id="clarityField"></div>
-      <span class="clarity-label mint">Clarity</span>
+    <div class="arc reveal">
+      <span class="arc-step">Uncertainty</span>
+      <span class="arc-line"></span>
+      <span class="arc-step mid">Visibility</span>
+      <span class="arc-line"></span>
+      <span class="arc-step end">Better decisions</span>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ 9. FINAL CTA ══════════════ -->
-<section class="ps-cta">
-  <div class="shell ps-cta-inner reveal">
-    <h2>Your degree isn't a straight line.<br />It should still have a map.</h2>
-    <p>DegreeFlow turns academic decisions into something you can see, explore and understand.</p>
+<!-- ═══════════ 12. FINAL ═══════════ -->
+<section class="final-cta">
+  <div class="shell final-inner reveal">
+    <h2>Your degree is a network of possibilities.<br /><em class="grad-word">DegreeFlow helps you see them.</em></h2>
+    <p>No more guesswork. Explore what your degree could become.</p>
     <a class="btn btn-primary btn-lg magnetic" href="explore.html">Explore Your Path <span class="arrow">→</span></a>
   </div>
 </section>
