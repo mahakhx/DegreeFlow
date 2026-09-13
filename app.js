@@ -9,8 +9,6 @@
   'use strict';
 
   const SVG_NS = 'http://www.w3.org/2000/svg';
-  /* safety: never leave the page scroll-locked if something above fails */
-  setTimeout(() => document.documentElement.classList.remove('is-loading'), 6000);
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------------------------------------------
@@ -379,6 +377,7 @@
   }
 
   function startIntro() {
+    if (introStarted) return;
     document.documentElement.classList.remove('is-loading');
     introStarted = true;
     heroTitle.classList.add('is-in');
@@ -387,34 +386,18 @@
     setTimeout(() => document.querySelectorAll('[data-count]').forEach(countUp), 700);
   }
 
-  (function preload() {
-    const pre = document.getElementById('preloader');
-    const num = document.getElementById('preCount');
-    const bar = document.getElementById('preBar');
-
-    if (reduceMotion) {
-      pre.remove();
+  /* motion.js (GSAP) owns the preloader sequence and calls this when it
+     finishes; if GSAP fails to load or errors out, fall back so the page
+     never stays stuck behind the preloader. */
+  window.__dfStartIntro = startIntro;
+  window.__dfReduceMotion = reduceMotion;
+  setTimeout(() => {
+    if (!introStarted) {
+      const pre = document.getElementById('preloader');
+      if (pre) pre.remove();
       startIntro();
-      return;
     }
-
-    let value = 0;
-    const step = () => {
-      value = Math.min(value + Math.random() * 9 + 3, 100);
-      num.textContent = Math.floor(value);
-      bar.style.width = value + '%';
-      if (value < 100) {
-        setTimeout(step, 70 + Math.random() * 90);
-      } else {
-        setTimeout(() => {
-          pre.classList.add('is-done');
-          startIntro();
-          setTimeout(() => pre.remove(), 1200);
-        }, 280);
-      }
-    };
-    setTimeout(step, 220);
-  })();
+  }, 4200);
 
   /* ---------------------------------------------------------
      7b. Magnetic buttons + drifting background parallax

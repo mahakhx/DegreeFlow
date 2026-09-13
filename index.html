@@ -13,6 +13,36 @@
 </head>
 <body>
 
+<!-- shared gradient defs for inline icon art -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gradPath" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4DA3FF" />
+      <stop offset="100%" stop-color="#9B8CFF" />
+    </linearGradient>
+    <linearGradient id="gradLock" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9B8CFF" />
+      <stop offset="100%" stop-color="#FF8FC0" />
+    </linearGradient>
+    <linearGradient id="gradExplore" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5EE6A8" />
+      <stop offset="100%" stop-color="#4DA3FF" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- left-side scroll progress indicator -->
+<nav class="progress-rail" id="progressRail" aria-hidden="true">
+  <div class="progress-track"><i class="progress-fill" id="progressFill"></i></div>
+  <ul class="progress-dots" id="progressDots">
+    <li data-target="hero" class="is-active" style="--p:0"></li>
+    <li data-target="problem" style="--p:.32"></li>
+    <li data-target="how" style="--p:.64"></li>
+    <li data-target="cta" style="--p:1"></li>
+  </ul>
+</nav>
+<div class="progress-bar-mobile" id="progressBarMobile" aria-hidden="true"><i id="progressFillMobile"></i></div>
+
 <!-- ambient field: iridescent blooms + film grain -->
 <div class="bg-field" aria-hidden="true">
   <span class="ribbon"></span>
@@ -26,17 +56,32 @@
 
 <!-- preloader -->
 <div class="preloader" id="preloader" aria-hidden="true">
-  <div class="pre-top">
-    <span class="pre-brand">DegreeFlow</span>
-    <span class="pre-note">Mapping the path</span>
+  <div class="pre-scene" id="preScene">
+    <svg class="pre-rings" viewBox="0 0 480 480" aria-hidden="true">
+      <circle class="pre-ring" cx="240" cy="240" r="96" />
+      <circle class="pre-ring" cx="240" cy="240" r="150" />
+      <circle class="pre-ring" cx="240" cy="240" r="204" />
+    </svg>
+
+    <div class="pre-orbit pre-orbit-1" id="preOrbit1"><span class="pre-node pre-node-mint"></span></div>
+    <div class="pre-orbit pre-orbit-2" id="preOrbit2">
+      <span class="pre-node pre-node-blue"></span>
+      <span class="pre-node pre-node-lav" style="--a:180deg"></span>
+    </div>
+    <div class="pre-orbit pre-orbit-3" id="preOrbit3"><span class="pre-node pre-node-pink"></span></div>
+
+    <div class="pre-center">
+      <span class="pre-word">DegreeFlow</span>
+      <span class="pre-tag">Mapping the path to graduation</span>
+    </div>
   </div>
-  <div class="pre-bottom"> See how your degree flows, and your path to graduation.</div>
-    <span class="pre-dot"></span>
-    <span class="pre-dot"></span>
-    <span class="pre-dot"></span>
-  <p class="pre-count"><span id="preCount">0</span><i>%</i></p>
-  <div class="pre-bar"><i id="preBar"></i></div>
+
+  <div class="pre-foot">
+    <div class="pre-bar"><i id="preBar"></i></div>
+    <p class="pre-count"><span id="preCount">0</span><i>%</i></p>
+  </div>
 </div>
+<noscript><style>.preloader{display:none!important}html.is-loading{overflow:visible!important}</style></noscript>
 
 <a class="skip" href="#hero">Skip to content</a>
 
@@ -96,13 +141,9 @@
       </div>
 
       <dl class="hero-meta" data-seq="7">
-       <!--<div><dt>Courses mapped</dt><dd data-count="2400" data-suffix="+">0</dd></div>
-        <div><dt>Prerequisite links</dt><dd data-count="9100" data-suffix="+">0</dd></div>
-        <div><dt>What-if scenarios</dt><dd>Unlimited</dd></div>--> 
         <div><dt>Courses</dt><dd>Mapped curriculum</dd></div>
-        <div><dt>Prerequisite links</dt><dd >Made visible</dd></div>
+        <div><dt>Prerequisite links</dt><dd>Made visible</dd></div>
         <div><dt>What-if scenarios</dt><dd>Explore without committing</dd></div>
-      
       </dl>
     </div>
 
@@ -193,47 +234,82 @@
         difficult to understand how one decision affects the rest of your degree.
       </p>
     </div>
+  </div>
 
-    <div class="cards">
-      <article class="card reveal" style="--i:0">
-        <svg class="card-art" viewBox="0 0 120 72" aria-hidden="true">
-          <path d="M10 58 L38 40 L66 46 L110 16" class="art-line" />
-          <circle cx="10" cy="58" r="4.5" class="art-dot on" />
-          <circle cx="38" cy="40" r="4.5" class="art-dot on" />
-          <circle cx="66" cy="46" r="5" class="art-dot live" />
-          <circle cx="110" cy="16" r="4.5" class="art-dot off" />
-        </svg>
-        <p class="card-index">01</p>
-        <h3>See your path</h3>
-        <p>Visualize completed, current, and remaining courses in one continuous map.</p>
-      </article>
+  <div class="problem-pin" id="problemPin">
+    <div class="shell problem-shell">
+      <div class="problem-stack" id="problemStack">
 
-      <article class="card reveal" style="--i:1">
-        <svg class="card-art" viewBox="0 0 120 72" aria-hidden="true">
-          <path d="M18 36 L58 16 M18 36 L58 56 M58 16 L100 26 M58 56 L100 26" class="art-line" />
-          <circle cx="18" cy="36" r="4.5" class="art-dot on" />
-          <circle cx="58" cy="16" r="4.5" class="art-dot on" />
-          <circle cx="58" cy="56" r="4.5" class="art-dot live" />
-          <circle cx="100" cy="26" r="5" class="art-dot off" />
-        </svg>
-        <p class="card-index">02</p>
-        <h3>Understand dependencies</h3>
-        <p>See exactly which prerequisites unlock which future courses, and what blocks them.</p>
-      </article>
+        <article class="p-card is-active" data-i="0">
+          <span class="p-card-index">01</span>
+          <svg class="p-art" viewBox="0 0 140 100" aria-hidden="true">
+            <g class="p-art-steps">
+              <rect x="4" y="74" width="26" height="20" rx="2" class="stair s1" />
+              <rect x="32" y="56" width="26" height="38" rx="2" class="stair s2" />
+              <rect x="60" y="38" width="26" height="56" rx="2" class="stair s3" />
+              <rect x="88" y="20" width="26" height="74" rx="2" class="stair s4" />
+            </g>
+            <g class="p-art-cap" transform="translate(97 2)">
+              <path d="M0 6 L13 0 L26 6 L13 12 Z" class="cap-top" />
+              <path d="M4 7.5 L4 13 Q13 17 22 13 L22 7.5" class="cap-brim" />
+              <line x1="13" y1="12" x2="13" y2="20" class="cap-tassel" />
+              <circle cx="13" cy="21" r="1.7" class="cap-bead" />
+            </g>
+          </svg>
+          <h3>See your path</h3>
+          <p>Visualize completed, current, and remaining courses in one continuous map — every step leading toward graduation.</p>
+        </article>
 
-      <article class="card reveal" style="--i:2">
-        <svg class="card-art" viewBox="0 0 120 72" aria-hidden="true">
-          <path d="M14 36 L52 36 L96 14" class="art-line" />
-          <path d="M52 36 L96 58" class="art-line art-line-alt" />
-          <circle cx="14" cy="36" r="4.5" class="art-dot on" />
-          <circle cx="52" cy="36" r="5" class="art-dot live" />
-          <circle cx="96" cy="14" r="4.5" class="art-dot off" />
-          <circle cx="96" cy="58" r="4.5" class="art-dot off" />
-        </svg>
-        <p class="card-index">03</p>
-        <h3>Explore what's possible</h3>
-        <p>Compare different academic pathways side by side before making a decision.</p>
-      </article>
+        <article class="p-card" data-i="1">
+          <span class="p-card-index">02</span>
+          <svg class="p-art" viewBox="0 0 140 100" aria-hidden="true">
+            <g class="p-art-links">
+              <path d="M12 74 L50 56" class="p-link" />
+              <path d="M12 26 L50 44" class="p-link" />
+              <path d="M128 50 L92 50" class="p-link dim" />
+              <circle cx="12" cy="74" r="4" class="p-node on" />
+              <circle cx="12" cy="26" r="4" class="p-node on" />
+              <circle cx="128" cy="50" r="4" class="p-node off" />
+            </g>
+            <g class="p-art-lock" transform="translate(56 26)">
+              <path d="M6 20 a14 14 0 0 1 28 0 l0 6 l-28 0 Z" class="lock-shackle" />
+              <rect x="0" y="24" width="40" height="30" rx="7" class="lock-body" />
+              <circle cx="20" cy="37" r="4" class="lock-hole" />
+              <line x1="20" y1="40" x2="20" y2="45" class="lock-hole-line" />
+            </g>
+          </svg>
+          <h3>Understand dependencies</h3>
+          <p>See exactly which prerequisites unlock which future courses — and what's still locked behind them.</p>
+        </article>
+
+        <article class="p-card" data-i="2">
+          <span class="p-card-index">03</span>
+          <svg class="p-art" viewBox="0 0 140 100" aria-hidden="true">
+            <g class="p-art-map">
+              <circle cx="18" cy="26" r="3" class="p-node on" />
+              <circle cx="44" cy="14" r="3" class="p-node on" />
+              <circle cx="70" cy="32" r="3" class="p-node live" />
+              <circle cx="98" cy="16" r="3" class="p-node off" />
+              <circle cx="116" cy="42" r="3" class="p-node off" />
+              <circle cx="32" cy="54" r="3" class="p-node off" />
+              <path d="M18 26 L44 14 L70 32 L98 16 M70 32 L116 42 M18 26 L32 54" class="map-line" />
+            </g>
+            <g class="p-art-glass" transform="translate(48 24)">
+              <circle cx="20" cy="20" r="18" class="glass-ring" />
+              <line x1="33" y1="33" x2="52" y2="52" class="glass-handle" />
+            </g>
+          </svg>
+          <h3>Explore what's possible</h3>
+          <p>Compare different academic pathways side by side — switch a major or add a minor before committing.</p>
+        </article>
+
+      </div>
+
+      <div class="problem-steps" id="problemSteps" aria-hidden="true">
+        <span class="p-step is-active" data-i="0"><i>01</i></span>
+        <span class="p-step" data-i="1"><i>02</i></span>
+        <span class="p-step" data-i="2"><i>03</i></span>
+      </div>
     </div>
   </div>
 </section>
@@ -243,42 +319,67 @@
   <div class="ticker-track" id="tickerTrack"></div>
 </div>
 
-<!-- ───────────────────────── HOW IT WORKS ───────────────────────── -->
-<section class="section how" id="how">
-  <div class="shell">
-    <div class="section-head reveal">
-      <h2 class="mask"><span>From confusion to clarity.</span></h2>
-      <p>Three steps between a transcript and a map you can actually plan with.</p>
+<!-- ───────────────────────── FROM CONFUSION TO CLARITY ───────────────────────── -->
+<section class="section clarity" id="how">
+  <div class="shell clarity-shell">
+
+    <div class="clarity-head reveal">
+      <p class="clarity-kicker">From confusion to clarity</p>
+      <h2 class="mask"><span>Three steps between a transcript</span></h2>
+      <h2 class="mask"><span>and a map you can plan with.</span></h2>
+      <p class="clarity-copy">
+        Set up your degree once. Watch prerequisites, electives and requirements resolve into
+        a single visual path — then explore what happens if you change your mind.
+      </p>
+      <a class="btn btn-ghost magnetic" href="explore.html">See it in action <span class="arrow">→</span></a>
     </div>
 
-    <div class="steps reveal" id="steps">
-      <svg class="steps-track" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
-        <path id="trackPath" class="track-base" d="M60 60 C 260 60, 240 22, 500 22 S 760 96, 940 60" />
-        <path id="trackLive" class="track-live" d="M60 60 C 260 60, 240 22, 500 22 S 760 96, 940 60" />
-        <circle class="track-spark" r="4.5">
-          <animateMotion dur="7s" repeatCount="indefinite" rotate="auto">
-            <mpath href="#trackPath" />
-          </animateMotion>
-        </circle>
-      </svg>
+    <div class="clarity-pin" id="clarityPin">
+      <div class="clarity-stage">
+        <div class="clarity-stack" id="clarityStack">
 
-      <ol class="step-list">
-        <li class="step" style="--i:0">
-          <span class="step-num">01</span>
-          <h3>Set up your degree</h3>
-          <p>Choose your university, major and current year.</p> </li>
-        <li class="step" style="--i:1">
-          <span class="step-num">02</span>
-          <h3>Visualize your pathway</h3>
-          <p>Every course becomes a node, every prerequisite a connection you can follow.</p>
-        </li>
-        <li class="step" style="--i:2">
-          <span class="step-num">03</span>
-          <h3>Explore your future</h3>
-          <p>Switch a major, drop a course, add a minor — watch the whole path redraw.</p>
-        </li>
-      </ol>
+          <article class="f-card is-active" data-i="0">
+            <div class="f-card-media">
+              <span class="f-card-media-label">Feature preview</span>
+            </div>
+            <div class="f-card-body">
+              <span class="f-card-num">01</span>
+              <h3>Set up your degree</h3>
+              <p>Choose your university, major and current year — DegreeFlow builds your requirement map instantly.</p>
+            </div>
+          </article>
+
+          <article class="f-card" data-i="1">
+            <div class="f-card-media">
+              <span class="f-card-media-label">Feature preview</span>
+            </div>
+            <div class="f-card-body">
+              <span class="f-card-num">02</span>
+              <h3>Visualize your pathway</h3>
+              <p>Every course becomes a node, every prerequisite a connection you can trace at a glance.</p>
+            </div>
+          </article>
+
+          <article class="f-card" data-i="2">
+            <div class="f-card-media">
+              <span class="f-card-media-label">Feature preview</span>
+            </div>
+            <div class="f-card-body">
+              <span class="f-card-num">03</span>
+              <h3>Explore your future</h3>
+              <p>Switch a major, drop a course, add a minor — watch the whole path redraw in real time.</p>
+            </div>
+          </article>
+
+        </div>
+        <div class="clarity-dots" id="clarityDots" aria-hidden="true">
+          <span class="c-dot is-active" data-i="0"></span>
+          <span class="c-dot" data-i="1"></span>
+          <span class="c-dot" data-i="2"></span>
+        </div>
+      </div>
     </div>
+
   </div>
 </section>
 
@@ -313,6 +414,9 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="app.js"></script>
+<script src="motion.js"></script>
 </body>
 </html>
