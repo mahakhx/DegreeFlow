@@ -33,11 +33,15 @@
   gsap.registerPlugin(ScrollTrigger);
   gsap.config({ nullTargetWarn: false });
 
-  runPreloader();
-  initProgressIndicator();
-  initProblemPresentation();
-  initClarityPresentation();
-  initCardTilt();
+  /* Each enhancement is isolated: if one throws (an unexpected DOM
+     shape, a GSAP edge case, etc.) it must never take the rest of the
+     page down with it, and the preloader in particular must never be
+     left stuck on screen. */
+  try { runPreloader(); } catch (e) { releasePreloaderInstantly(); }
+  try { initProgressIndicator(); } catch (e) {}
+  try { initProblemPresentation(); } catch (e) {}
+  try { initClarityPresentation(); } catch (e) {}
+  try { initCardTilt(); } catch (e) {}
 
   /* ---------------------------------------------------------
      1. Preloader — orbiting geometry around the wordmark
@@ -93,25 +97,33 @@
 
     var value = 0;
     function bump() {
-      value = Math.min(value + Math.random() * 18 + 10, 100);
-      if (numEl) numEl.textContent = Math.floor(value);
-      if (barEl) barEl.style.width = value + '%';
-      if (value < 100) {
-        setTimeout(bump, 45 + Math.random() * 70);
-      } else {
-        setTimeout(exit, 180);
-      }
+      try {
+        value = Math.min(value + Math.random() * 18 + 10, 100);
+        if (numEl) numEl.textContent = Math.floor(value);
+        if (barEl) barEl.style.width = value + '%';
+        if (value < 100) {
+          setTimeout(bump, 45 + Math.random() * 70);
+        } else {
+          setTimeout(exit, 180);
+        }
+      } catch (e) { finish(); }
     }
     setTimeout(bump, 260);
 
     function exit() {
-      spins.forEach(function (s) { s.kill(); });
-      gsap.timeline({ onComplete: finish })
-        .to(nodes, { scale: 1.8, opacity: 0, duration: .5, stagger: .04, ease: 'power2.in' }, 0)
-        .to(rings, { opacity: 0, scale: 1.12, duration: .45, ease: 'power1.in' }, 0)
-        .to([word, tag], { y: -10, opacity: 0, duration: .4, ease: 'power2.in' }, .05)
-        .to(pre, { yPercent: -100, duration: .85, ease: 'power4.inOut' }, .32);
+      try {
+        spins.forEach(function (s) { s.kill(); });
+        gsap.timeline({ onComplete: finish })
+          .to(nodes, { scale: 1.8, opacity: 0, duration: .5, stagger: .04, ease: 'power2.in' }, 0)
+          .to(rings, { opacity: 0, scale: 1.12, duration: .45, ease: 'power1.in' }, 0)
+          .to([word, tag], { y: -10, opacity: 0, duration: .4, ease: 'power2.in' }, .05)
+          .to(pre, { yPercent: -100, duration: .85, ease: 'power4.inOut' }, .32);
+      } catch (e) { finish(); }
     }
+
+    /* belt-and-suspenders: whatever happens above, never let the
+       preloader sit on screen for more than ~3s */
+    setTimeout(finish, 3000);
   }
 
   /* ---------------------------------------------------------
